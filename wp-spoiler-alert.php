@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: wp-spoiler-alert
-Description: Blurs out parts of your post containing spoilers.
+Description: Shortcode to hide Spoilers in your Posts
 Version: 0.1.0
 Author: Darshan Sawardekar
 Author URI: http://pressing-matters.io/
