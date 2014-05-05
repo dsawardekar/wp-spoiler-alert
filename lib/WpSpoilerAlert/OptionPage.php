@@ -11,11 +11,11 @@ class OptionPage {
   }
 
   function getPageTitle() {
-    return $this->pluginSlug . ' | Settings';
+    return 'WP Spoiler Alert | Settings';
   }
 
   function getMenuTitle() {
-    return $this->pluginSlug;
+    return 'WP Spoiler Alert';
   }
 
   function getCapability() {
@@ -44,8 +44,10 @@ class OptionPage {
   function getTemplateContext() {
     $context = array(
       'settings_fields' => $this->getSettingsFields($this->pluginSlug),
-      'maxBlur' => $this->optionStore->getOption('maxBlur'),
-      'partialBlur' => $this->optionStore->getOption('partialBlur'),
+      'max'     => $this->optionStore->getOption('max'),
+      'partial' => $this->optionStore->getOption('partial'),
+      'tooltip' => $this->optionStore->getOption('tooltip'),
+      'custom'  => $this->optionStore->getOption('custom') ? 'checked' : '',
     );
 
     return $context;

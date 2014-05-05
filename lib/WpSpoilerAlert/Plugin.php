@@ -32,7 +32,7 @@ class Plugin {
       ->object('pluginFile', $pluginFile)
       ->object('pluginSlug', 'wp_spoiler_alert')
       ->object('pluginDir', untrailingslashit(plugin_dir_path($pluginFile)))
-      ->object('pluginVersion', time())
+      ->object('pluginVersion', Version::$version)
       ->object('defaultOptions', $this->getDefaultOptions())
       ->object('optionName', 'wp_spoiler_alert_options')
 
@@ -47,8 +47,9 @@ class Plugin {
       ->singleton('optionStore', 'WpSpoilerAlert\OptionStore')
       ->singleton('optionPage', 'WpSpoilerAlert\OptionPage')
       ->singleton('optionSanitizer', 'WpSpoilerAlert\OptionSanitizer')
-      ->singleton('adminScriptLoader', 'WordPress\AdminScriptLoader');
+      ->singleton('adminScriptLoader', 'WordPress\AdminScriptLoader')
 
+      ->singleton('shortcode', 'WpSpoilerAlert\Shortcode');
 
     $this->container = $container;
   }
@@ -65,8 +66,10 @@ class Plugin {
 
   function getDefaultOptions() {
     return array(
-      'maxBlur' => 10,
-      'partialBlur' => 4
+      'max' => 6,
+      'partial' => 3,
+      'tooltip' => 'Click for Spoilers!',
+      'custom' => false
     );
   }
 
@@ -90,6 +93,9 @@ class Plugin {
   }
 
   function initFrontEnd() {
+    $shortcode = $this->lookup('shortcode');
+
+    add_shortcode('spoiler', array($shortcode, 'render'));
     add_action('wp_footer', array($this, 'loadSpoilerJS'));
   }
 
@@ -98,11 +104,31 @@ class Plugin {
 
     if ($shortcode->isPresent()) {
       $options = $this->getScriptOptions();
-      $options['localizer'] = array($this, 'getPluginOptions');
+      $options['dependencies'] = array('jquery');
 
       $loader = $this->lookup('scriptLoader');
-      $loader = $this->stream('spoiler', $options);
+      $loader->stream('spoiler', $options);
+
+      $options = $this->getScriptOptions();
+      $options['dependencies'] = array('spoiler');
+      $options['localizer'] = array($this, 'getPluginOptions');
+
+      if ($this->canLoadCustomCSS()) {
+        $this->loadCustomCSS();
+      }
+
+      $loader->stream('spoiler-run', $options);
     }
+  }
+
+  function canLoadCustomCSS() {
+    return $this->lookup('optionStore')->getOption('custom') &&
+      $this->hasCustomStylesheet();
+  }
+
+  function loadCustomCSS() {
+    $loader = $this->lookup('stylesheetLoader');
+    $loader->stream('theme-custom', $this->getStylesheetOptions());
   }
 
   function hasCustomStylesheet() {
@@ -118,6 +144,10 @@ class Plugin {
 
   function getPluginOptions($script) {
     $options = $this->lookup('optionStore')->getOptions();
+    if ($options['custom'] && !$this->canLoadCustomCSS()) {
+      $options['custom'] = false;
+    }
+
     return $options;
   }
 

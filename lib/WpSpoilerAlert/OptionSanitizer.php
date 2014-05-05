@@ -7,6 +7,7 @@ class OptionSanitizer {
   protected $errors = array();
   protected $options;
   protected $checkedFields = array(
+    'custom'
   );
 
   function needs() {
@@ -52,12 +53,16 @@ class OptionSanitizer {
     return $this->errors;
   }
 
-  function validateMaxBlur($value) {
+  function validateMax($value) {
     return $this->validateNumber($value);
   }
 
-  function validatePartialBlur($value) {
+  function validatePartial($value) {
     return $this->validateNumber($value);
+  }
+
+  function validateTooltip($value) {
+    return $this->validateText($value);
   }
 
   function toChecked($key) {

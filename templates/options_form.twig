@@ -3,27 +3,47 @@
   <form method="POST" action="options.php">
   {{ settings_fields | raw }}
   {#
-  <p>maxBlur: {{ maxBlur }}</p>
+  <p>max: {{ max }}</p>
   <p>partialBlur: {{ partialBlur }}</p>
+  <p>tooltip: {{ tooltip }}</p>
+  <p>custom: {{ custom }}</p>
   #}
   <table class="form-table">
     <tbody>
       <tr>
         <th scope="row">
-          <label for="maxBlur">Maximum Blur</label>
+          <label for="max">Maximum Blur</label>
         </th>
         <td>
-          <input type="text" id="maxBlur" name="wp_spoiler_alert_options[maxBlur]"
-          value="{{ maxBlur }}" />
+          <input type="text" id="max" name="wp_spoiler_alert_options[max]"
+          value="{{ max }}" />
         </td>
       </tr>
       <tr>
         <th scope="row">
-          <label for="partialBlur">Partial Blur</label>
+          <label for="partial">Partial Blur</label>
         </th>
         <td>
-          <input type="text" id="partialBlur" name="wp_spoiler_alert_options[partialBlur]"
-          value="{{ partialBlur }}" />
+          <input type="text" id="partial" name="wp_spoiler_alert_options[partial]"
+          value="{{ partial }}" />
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          <label for="tooltip">Tooltip</label>
+        </th>
+        <td>
+          <input type="text" id="partial" name="wp_spoiler_alert_options[tooltip]"
+          value="{{ tooltip }}" />
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          <label for="custom">Custom Stylesheet</label>
+        </th>
+        <td>
+          <input type="checkbox" id="custom" name="wp_spoiler_alert_options[custom]"
+          {{ custom }} />
         </td>
       </tr>
     </tbody>

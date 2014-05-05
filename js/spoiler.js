@@ -1,101 +1,88 @@
-(function( $ ) {
-  var userAgent = navigator.userAgent.toLowerCase();
-  var browser = {}
-  browser.mozilla = /mozilla/.test(userAgent) && !/webkit/.test(userAgent);
-  browser.webkit = /webkit/.test(userAgent);
-  browser.opera = /opera/.test(userAgent);
-  browser.msie = /msie/.test(userAgent);
+(function($) {
 
-  var defaults = {
-    max: 4,
-    partial: 2,
-    hintText: 'Click to reveal completely'
-  }
-
-  var alertShown = false
-
-  $.fn.spoilerAlert = function(opts) {
-    opts = $.extend(defaults, opts || {})
-    var maxBlur = opts.max
-    var partialBlur = opts.partial
-    var hintText = opts.hintText
-    if (!alertShown && browser.msie) {
-      alert("WARNING, this site contains spoilers!")
-      alertShown = true
-    }
-    return this.each(function() {
-      var $spoiler = $(this)
-      $spoiler.data('spoiler-state', 'shrouded')
-
-      var animationTimer = null
-      var currentBlur = maxBlur
-
-      var cancelTimer = function() {
-        if (animationTimer) {
-          clearTimeout(animationTimer)
-          animationTimer = null
-        }
-      }
-
-      var applyBlur = function(radius) {
-        currentBlur = radius
-        if (browser.msie) {
-          var filterValue = "progid:DXImageTransform.Microsoft.Blur(pixelradius="+radius+")"
-          $spoiler.css('filter', filterValue)
-        } else if (browser.mozilla) {
-          var filterValue = radius > 0 ? "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'>" +
-            "<filter id='blur'><feGaussianBlur stdDeviation='" + radius + "' /></filter></svg>#blur\")" : ''
-          $spoiler.css('filter', filterValue)
-        } else {
-          var filterValue = radius > 0 ? 'blur('+radius+'px)' : ''
-          $spoiler.css('filter', filterValue)
-            .css('-webkit-filter', filterValue)
-            .css('-moz-filter', filterValue)
-            .css('-o-filter', filterValue)
-            .css('-ms-filter', filterValue)
-        }
-      }
-
-      var performBlur = function(targetBlur, direction) {
-        cancelTimer()
-        if (currentBlur != targetBlur) {
-          applyBlur(currentBlur + direction)
-          animationTimer = setTimeout(function() { performBlur(targetBlur, direction) }, 10)
-        }
-      }
-
-      // Does the user have IE 9 or less?
-      var ieLessThanTen = function() {
-        // This conditional check will return true if browser supports CANVAS
-        // IE9 and under do not support CANVAS and this function is only ever
-        // called by the IE checking function anyway
-        return !document.createElement('canvas').getContext
-      }
-
-      applyBlur(currentBlur)
-
-      $spoiler.on('mouseover', function(e) {
-        $spoiler.css('cursor', 'pointer')
-          .attr('title', hintText)
-        if ($spoiler.data('spoiler-state') == 'shrouded') performBlur(partialBlur, -1)
-      })
-      $spoiler.on('mouseout', function(e) {
-        if ($spoiler.data('spoiler-state') == 'shrouded') performBlur(maxBlur, 1)
-      })
-      $spoiler.on('click', function(e) {
-        if ($spoiler.data('spoiler-state') == 'shrouded') {
-          $spoiler.data('spoiler-state', 'revealed')
-            .attr('title', '')
-            .css('cursor', 'auto')
-          performBlur(0, -1)
-        } else {
-          $spoiler.data('spoiler-state', 'shrouded')
-            .attr('title', hintText)
-            .css('cursor', 'pointer')
-          performBlur(partialBlur, 1)
-        }
-      })
-    })
+  var Spoiler = function() {
 
   };
-})( jQuery );
+
+  Spoiler.prototype.enable = function(element) {
+    var self = this;
+    if (typeof element === 'undefined') {
+      element = $(document);
+    }
+
+    element.on('click', function(event) {
+      self.toggle($(event.target));
+    });
+  };
+
+  Spoiler.prototype.toggle = function(element) {
+    var block = this.findSpoiler(element, 'spoiler-hidden');
+
+    if (block !== null) {
+      this.showBlock(block);
+      return;
+    }
+
+    block = this.findSpoiler(element, 'spoiler-visible');
+
+    if (block !== null) {
+      this.hideBlock(block);
+      return;
+    }
+  };
+
+  Spoiler.prototype.findSpoiler = function(element, name) {
+    if (element.hasClass(name)) {
+      return element;
+    }
+
+    var selector = 'div[class^=' + name + ']';
+    var closest = element.closest(selector);
+
+    if (closest.hasClass('spoiler-hidden')) {
+      return closest;
+    } else if (closest.hasClass('spoiler-visible')) {
+      return closest;
+    }
+
+    return null;
+  };
+
+  Spoiler.prototype.show = function(blocks) {
+    var n = blocks.length;
+    for (var i = 0; i < n; i++) {
+      this.showBlock(blocks[i]);
+    }
+  };
+
+  Spoiler.prototype.hide = function(blocks) {
+    var n = blocks.length;
+    for (var i = 0; i < n; i++) {
+      this.hideBlock(blocks[i]);
+    }
+  };
+
+  Spoiler.prototype.showBlock = function(block) {
+    this.switchClass(block, 'spoiler-hidden', 'spoiler-visible');
+  };
+
+  Spoiler.prototype.hideBlock = function(block) {
+    this.switchClass(block, 'spoiler-visible', 'spoiler-hidden');
+  };
+
+  Spoiler.prototype.switchClass = function(block, from, to) {
+    $(block).toggleClass(from);
+    $(block).toggleClass(to);
+  };
+
+  $.fn.spoilerAlert = function() {
+    var spoiler = new Spoiler();
+    spoiler.enable();
+  };
+
+  $(document).ready(function() {
+    $(document).spoilerAlert();
+  });
+
+}(jQuery));
+
