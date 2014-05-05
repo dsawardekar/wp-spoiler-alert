@@ -1,0 +1,57 @@
+<div class="wrap">
+  <h2>WP-Spoiler-Alert Settings</h2>
+  <form method="POST" action="options.php">
+  {{ settings_fields | raw }}
+  {#
+  <p>max: {{ max }}</p>
+  <p>partialBlur: {{ partialBlur }}</p>
+  <p>tooltip: {{ tooltip }}</p>
+  <p>custom: {{ custom }}</p>
+  #}
+  <table class="form-table">
+    <tbody>
+      <tr>
+        <th scope="row">
+          <label for="max">Maximum Blur</label>
+        </th>
+        <td>
+          <input type="text" id="max" name="wp_spoiler_alert_options[max]"
+          value="{{ max }}" />
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          <label for="partial">Partial Blur</label>
+        </th>
+        <td>
+          <input type="text" id="partial" name="wp_spoiler_alert_options[partial]"
+          value="{{ partial }}" />
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          <label for="tooltip">Tooltip</label>
+        </th>
+        <td>
+          <input type="text" id="partial" name="wp_spoiler_alert_options[tooltip]"
+          value="{{ tooltip }}" />
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          <label for="custom">Custom Stylesheet</label>
+        </th>
+        <td>
+          <input type="checkbox" id="custom" name="wp_spoiler_alert_options[custom]"
+          {{ custom }} />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="submit">
+    <input type="hidden" id="restoreDefaults" name="wp_spoiler_alert_options[restoreDefaults]" value="0" />
+    <input name="submit" id="submit" class="button button-primary" value="Save Changes" type="submit">
+    <input name="reset" id="reset" class="button" value="Restore Defaults" type="submit">
+  </p>
+  </form>
+</div>
