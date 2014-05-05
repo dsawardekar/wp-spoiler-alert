@@ -9,10 +9,10 @@ Plugin URI: http://wordpress.org/plugins/wp-spoiler-alert
 License: GPLv2
 */
 
-require_once(__DIR__ .  '/lib/WordPress/Requirements.php');
+require_once(__DIR__ .  '/lib/WpSpoilerAlert/Requirements.php');
 
-use WordPress\MinRequirements;
-use WordPress\FauxPlugin;
+use WpSpoilerAlert\MinRequirements;
+use WpSpoilerAlert\FauxPlugin;
 use WpSpoilerAlert\Plugin;
 
 function wp_spoiler_alert_load() {
