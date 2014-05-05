@@ -1,0 +1,37 @@
+<div class="wrap">
+  <h2>WP-Spoiler-Alert Settings</h2>
+  <form method="POST" action="options.php">
+  {{ settings_fields | raw }}
+  {#
+  <p>maxBlur: {{ maxBlur }}</p>
+  <p>partialBlur: {{ partialBlur }}</p>
+  #}
+  <table class="form-table">
+    <tbody>
+      <tr>
+        <th scope="row">
+          <label for="maxBlur">Maximum Blur</label>
+        </th>
+        <td>
+          <input type="text" id="maxBlur" name="wp_spoiler_alert_options[maxBlur]"
+          value="{{ maxBlur }}" />
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          <label for="partialBlur">Partial Blur</label>
+        </th>
+        <td>
+          <input type="text" id="partialBlur" name="wp_spoiler_alert_options[partialBlur]"
+          value="{{ partialBlur }}" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="submit">
+    <input type="hidden" id="restoreDefaults" name="wp_spoiler_alert_options[restoreDefaults]" value="0" />
+    <input name="submit" id="submit" class="button button-primary" value="Save Changes" type="submit">
+    <input name="reset" id="reset" class="button" value="Restore Defaults" type="submit">
+  </p>
+  </form>
+</div>
