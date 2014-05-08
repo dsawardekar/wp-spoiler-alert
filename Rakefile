@@ -87,6 +87,14 @@ namespace :composer do
       sh 'git commit -m "Fresh composer update"'
     end
   end
+
+  desc "Update Requirements.php"
+  task :update_requirements do
+    source = 'vendor/dsawardekar/wp-requirements/lib/MyWordPressPlugin/Requirements.php'
+    contents = File.read(source)
+    contents = contents.gsub('MyWordPressPlugin', 'WpSpoilerAlert')
+    File.write('lib/WpSpoilerAlert/Requirements.php', contents)
+  end
 end
 
 namespace :svn do
