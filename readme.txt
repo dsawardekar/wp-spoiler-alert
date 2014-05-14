@@ -85,6 +85,10 @@ Yes, see the customization section under Installation.
 
 == Changelog ==
 
+= 0.2.2 =
+
+* Removes error_log
+
 = 0.2.1 =
 
 * Removes debug messages from 0.2.0
