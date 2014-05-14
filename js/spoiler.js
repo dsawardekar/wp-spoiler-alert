@@ -80,9 +80,5 @@
     spoiler.enable();
   };
 
-  $(document).ready(function() {
-    $(document).spoilerAlert();
-  });
-
 }(jQuery));
 

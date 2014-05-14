@@ -116,7 +116,7 @@
   };
 
   SpoilerStylesheet.prototype.getOptions = function() {
-    var options = spoiler_run;
+    var options = spoiler_options;
     this.toInteger('max', options);
     this.toInteger('partial', options);
     this.toBoolean('custom', options);
@@ -137,8 +137,11 @@
   };
 
   $(document).ready(function() {
+    console.log(spoiler_options);
     var stylesheet = new SpoilerStylesheet();
     stylesheet.append();
+
+    $(document).spoilerAlert();
   });
 
 }(jQuery));
