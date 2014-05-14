@@ -4,19 +4,21 @@ namespace WpSpoilerAlert;
 
 class Shortcode {
 
+  public $optionsStore;
+
   protected $didRender = false;
   protected $defaults = array(
     'mode' => 'block'
   );
 
   function needs() {
-    return array('optionStore');
+    return array('optionsStore');
   }
 
   function render($params, $content) {
     $params = $this->parse($params);
-    $tag = $this->tagFor($params['mode']);
-    $title = $this->optionStore->getOption('tooltip');
+    $tag    = $this->tagFor($params['mode']);
+    $title  = $this->optionsStore->getOption('tooltip');
 
     $this->didRender = true;
 

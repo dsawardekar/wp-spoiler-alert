@@ -2,11 +2,26 @@
 
 namespace WpSpoilerAlert;
 
+use Encase\Container;
+
 class ShortcodeTest extends \WP_UnitTestCase {
+
+  public $container;
+  public $shortcode;
+  public $pluginMeta;
 
   function setUp() {
     parent::setUp();
-    $this->shortcode = new Shortcode();
+
+    $this->pluginMeta = new PluginMeta('wp-spoiler-alert.php');
+    $this->container = new Container();
+    $this->container
+      ->object('pluginMeta', $this->pluginMeta)
+      ->object('optionsManager', new \Arrow\OptionsManager\OptionsManager($this->container))
+      ->singleton('shortcode', 'WpSpoilerAlert\Shortcode');
+
+
+    $this->shortcode = $this->container->lookup('shortcode');
   }
 
   function test_it_can_wrap_text_with_spoiler() {
@@ -14,7 +29,7 @@ class ShortcodeTest extends \WP_UnitTestCase {
     $actual = $this->shortcode->render(array(), $html);
     $matcher = array(
       'tag' => 'div',
-      'attributes' => array('class' => 'spoiler')
+      'attributes' => array('class' => 'spoiler-hidden')
     );
 
     $this->assertTag($matcher, $actual);
@@ -25,7 +40,7 @@ class ShortcodeTest extends \WP_UnitTestCase {
     $actual = $this->shortcode->render(array(), $html);
     $matcher = array(
       'tag' => 'div',
-      'attributes' => array('class' => 'spoiler')
+      'attributes' => array('class' => 'spoiler-hidden')
     );
 
     $this->assertTag($matcher, $actual);

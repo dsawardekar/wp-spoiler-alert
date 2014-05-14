@@ -3,11 +3,7 @@
 namespace WpSpoilerAlert;
 
 use Encase\Container;
-use WordPress\Script;
-use WordPress\ScriptLoader;
-use WordPress\Stylesheet;
-use WordPress\StylesheetLoader;
-use WordPress\Logger;
+use Arrow\AssetManager\AssetManager;
 
 class Plugin {
 
@@ -26,32 +22,13 @@ class Plugin {
 
   public $container;
 
-  function __construct($pluginFile) {
-    $container = new Container();
-    $container
-      ->object('pluginFile', $pluginFile)
-      ->object('pluginSlug', 'wp_spoiler_alert')
-      ->object('pluginDir', untrailingslashit(plugin_dir_path($pluginFile)))
-      ->object('pluginVersion', Version::$version)
-      ->object('defaultOptions', $this->getDefaultOptions())
-      ->object('optionName', 'wp_spoiler_alert_options')
-
-      ->factory('script', 'WordPress\Script')
-      ->factory('stylesheet', 'WordPress\Stylesheet')
-      ->singleton('scriptLoader', 'WordPress\ScriptLoader')
-      ->singleton('stylesheetLoader', 'WordPress\StylesheetLoader')
-
-      ->singleton('twigHelper', 'WordPress\TwigHelper')
-      ->initializer('twigHelper', array($this, 'initTwigHelper'))
-
-      ->singleton('optionStore', 'WpSpoilerAlert\OptionStore')
-      ->singleton('optionPage', 'WpSpoilerAlert\OptionPage')
-      ->singleton('optionSanitizer', 'WpSpoilerAlert\OptionSanitizer')
-      ->singleton('adminScriptLoader', 'WordPress\AdminScriptLoader')
-
+  function __construct($file) {
+    $this->container = new Container();
+    $this->container
+      ->object('pluginMeta', new PluginMeta($file))
+      ->object('assetManager', new \Arrow\AssetManager\AssetManager($this->container))
+      ->object('optionsManager', new OptionsManager($this->container))
       ->singleton('shortcode', 'WpSpoilerAlert\Shortcode');
-
-    $this->container = $container;
   }
 
   function lookup($key) {
@@ -60,36 +37,16 @@ class Plugin {
 
   function enable() {
     add_action('init', array($this, 'initFrontEnd'));
-    add_action('admin_init', array($this, 'initOptionStore'));
-    add_action('admin_menu', array($this, 'initOptionPage'));
+    add_action('admin_init', array($this, 'initAdmin'));
+    add_action('admin_menu', array($this, 'initAdminMenu'));
   }
 
-  function getDefaultOptions() {
-    return array(
-      'max' => 6,
-      'partial' => 3,
-      'tooltip' => 'Click for Spoilers!',
-      'custom' => false
-    );
+  function initAdmin() {
+    $this->lookup('optionsPostHandler')->enable();
   }
 
-  function initOptionStore() {
-    $this->lookup('optionStore')->register();
-  }
-
-  function initOptionPage() {
-    $this->lookup('optionPage')->register();
-    $this->initAdminScripts();
-  }
-
-  function initAdminScripts() {
-    $loader = $this->lookup('adminScriptLoader');
-    $loader->schedule('wp-spoiler-alert-options', $this->getScriptOptions());
-    $loader->load();
-  }
-
-  function initTwigHelper($twigHelper, $container) {
-    $twigHelper->setBaseDir($container->lookup('pluginDir'));
+  function initAdminMenu() {
+    $this->lookup('optionsPage')->register();
   }
 
   function initFrontEnd() {
@@ -100,16 +57,17 @@ class Plugin {
   }
 
   function loadSpoilerJS() {
+    error_log('loadSpoilerJS');
     $shortcode = $this->lookup('shortcode');
 
     if ($shortcode->isPresent()) {
-      $options = $this->getScriptOptions();
+      $options = array();
       $options['dependencies'] = array('jquery');
 
       $loader = $this->lookup('scriptLoader');
       $loader->stream('spoiler', $options);
 
-      $options = $this->getScriptOptions();
+      $options = array();
       $options['dependencies'] = array('spoiler');
       $options['localizer'] = array($this, 'getPluginOptions');
 
@@ -117,33 +75,22 @@ class Plugin {
         $this->loadCustomCSS();
       }
 
-      $loader->stream('spoiler-run', $options);
+      $loader->stream('spoiler-options', $options);
     }
   }
 
   function canLoadCustomCSS() {
-    return $this->lookup('optionStore')->getOption('custom') &&
-      $this->hasCustomStylesheet();
+    return $this->lookup('optionsStore')->getOption('custom') &&
+      $this->lookup('pluginMeta')->hasCustomStylesheet();
   }
 
   function loadCustomCSS() {
     $loader = $this->lookup('stylesheetLoader');
-    $loader->stream('theme-custom', $this->getStylesheetOptions());
-  }
-
-  function hasCustomStylesheet() {
-    return file_exists($this->getCustomThemePath());
-  }
-
-  function getCustomThemePath() {
-    $path  = get_stylesheet_directory();
-    $path .= '/wp-spoiler-alert/custom.css';
-
-    return $path;
+    $loader->stream('theme-custom');
   }
 
   function getPluginOptions($script) {
-    $options = $this->lookup('optionStore')->getOptions();
+    $options = $this->lookup('optionsStore')->getOptions();
     if ($options['custom'] && !$this->canLoadCustomCSS()) {
       $options['custom'] = false;
     }
@@ -151,17 +98,4 @@ class Plugin {
     return $options;
   }
 
-  function getStylesheetOptions() {
-    return array(
-      'version' => $this->lookup('pluginVersion'),
-      'media' => 'all'
-    );
-  }
-
-  function getScriptOptions() {
-    return array(
-      'version' => $this->lookup('pluginVersion'),
-      'in_footer' => true
-    );
-  }
 }
