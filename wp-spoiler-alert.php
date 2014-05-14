@@ -9,32 +9,31 @@ Plugin URI: http://wordpress.org/plugins/wp-spoiler-alert
 License: GPLv2
 */
 
-require_once(__DIR__ .  '/lib/WpSpoilerAlert/Requirements.php');
+require_once(__DIR__ . '/vendor/dsawardekar/wp-requirements/lib/Requirements.php');
 
-use WpSpoilerAlert\MinRequirements;
-use WpSpoilerAlert\FauxPlugin;
-use WpSpoilerAlert\Plugin;
+function wp_spoiler_alert_main() {
+  $requirements = new WP_Requirements();
+
+  if ($requirements->satisfied()) {
+    wp_spoiler_alert_register();
+  } else {
+    $plugin = new WP_Faux_Plugin('WP Spoiler Alert', $requirements->getResults());
+    $plugin->activate(__FILE__);
+  }
+}
+
+function wp_spoiler_alert_register() {
+  require_once(__DIR__ . '/vendor/dsawardekar/arrow/lib/Arrow/ArrowPluginLoader.php');
+
+  $loader = ArrowPluginLoader::getInstance();
+  $loader->register('wp-spoiler-alert', '0.4.1', 'wp_spoiler_alert_load');
+}
 
 function wp_spoiler_alert_load() {
   require_once(__DIR__ . '/vendor/autoload.php');
 
-  $plugin = Plugin::create(__FILE__);
+  $plugin = \WpSpoilerAlert\Plugin::create(__FILE__);
   $plugin->enable();
-}
-
-function wp_spoiler_alert_faux_load($requirements) {
-  $plugin = new FauxPlugin('wp-spoiler-alert', $requirements->getResults());
-  $plugin->activate(__FILE__);
-}
-
-function wp_spoiler_alert_main() {
-  $requirements = new MinRequirements();
-
-  if ($requirements->satisfied()) {
-    wp_spoiler_alert_load();
-  } else {
-    wp_spoiler_alert_faux_load($requirements);
-  }
 }
 
 wp_spoiler_alert_main();

@@ -1,13 +1,7 @@
 <div class="wrap">
   <h2>WP-Spoiler-Alert Settings</h2>
-  <form method="POST" action="options.php">
-  {{ settings_fields | raw }}
-  {#
-  <p>max: {{ max }}</p>
-  <p>partialBlur: {{ partialBlur }}</p>
-  <p>tooltip: {{ tooltip }}</p>
-  <p>custom: {{ custom }}</p>
-  #}
+  <form method="POST" action="{{ formUrl }}">
+  {{ nonceField | raw }}
   <table class="form-table">
     <tbody>
       <tr>
@@ -15,7 +9,7 @@
           <label for="max">Maximum Blur</label>
         </th>
         <td>
-          <input type="text" id="max" name="wp_spoiler_alert_options[max]"
+          <input type="text" id="max" name="max"
           value="{{ max }}" />
         </td>
       </tr>
@@ -24,7 +18,7 @@
           <label for="partial">Partial Blur</label>
         </th>
         <td>
-          <input type="text" id="partial" name="wp_spoiler_alert_options[partial]"
+          <input type="text" id="partial" name="partial"
           value="{{ partial }}" />
         </td>
       </tr>
@@ -33,7 +27,7 @@
           <label for="tooltip">Tooltip</label>
         </th>
         <td>
-          <input type="text" id="partial" name="wp_spoiler_alert_options[tooltip]"
+          <input type="text" id="partial" name="tooltip"
           value="{{ tooltip }}" />
         </td>
       </tr>
@@ -42,14 +36,13 @@
           <label for="custom">Custom Stylesheet</label>
         </th>
         <td>
-          <input type="checkbox" id="custom" name="wp_spoiler_alert_options[custom]"
-          {{ custom }} />
+          <input type="checkbox" id="custom" name="custom"
+          {{ custom ? 'checked' : '' }} />
         </td>
       </tr>
     </tbody>
   </table>
   <p class="submit">
-    <input type="hidden" id="restoreDefaults" name="wp_spoiler_alert_options[restoreDefaults]" value="0" />
     <input name="submit" id="submit" class="button button-primary" value="Save Changes" type="submit">
     <input name="reset" id="reset" class="button" value="Restore Defaults" type="submit">
   </p>
