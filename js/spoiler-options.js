@@ -137,7 +137,6 @@
   };
 
   $(document).ready(function() {
-    console.log(spoiler_options);
     var stylesheet = new SpoilerStylesheet();
     stylesheet.append();
 
