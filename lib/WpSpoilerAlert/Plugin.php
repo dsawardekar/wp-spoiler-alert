@@ -57,7 +57,6 @@ class Plugin {
   }
 
   function loadSpoilerJS() {
-    error_log('loadSpoilerJS');
     $shortcode = $this->lookup('shortcode');
 
     if ($shortcode->isPresent()) {
