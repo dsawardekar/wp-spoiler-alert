@@ -9,7 +9,7 @@ Plugin URI: http://wordpress.org/plugins/wp-spoiler-alert
 License: GPLv2
 */
 
-require_once(__DIR__ . '/vendor/dsawardekar/arrowy/lib/Arrow/ArrowPluginLoader.php');
+require_once(__DIR__ . '/vendor/dsawardekar/arrow/lib/Arrow/ArrowPluginLoader.php');
 
 function wp_spoiler_alert_main() {
   $options = array(
