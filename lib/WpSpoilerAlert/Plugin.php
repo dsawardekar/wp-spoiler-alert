@@ -2,37 +2,20 @@
 
 namespace WpSpoilerAlert;
 
-use Encase\Container;
 use Arrow\AssetManager\AssetManager;
 
-class Plugin {
-
-  static $instance = null;
-  static function create($file) {
-    if (is_null(self::$instance)) {
-      self::$instance = new Plugin($file);
-    }
-
-    return self::$instance;
-  }
-
-  static function getInstance() {
-    return self::$instance;
-  }
+class Plugin extends \Arrow\Plugin {
 
   public $container;
 
   function __construct($file) {
-    $this->container = new Container();
+    parent::__construct($file);
+
     $this->container
       ->object('pluginMeta', new PluginMeta($file))
       ->object('assetManager', new \Arrow\AssetManager\AssetManager($this->container))
       ->object('optionsManager', new OptionsManager($this->container))
       ->singleton('shortcode', 'WpSpoilerAlert\Shortcode');
-  }
-
-  function lookup($key) {
-    return $this->container->lookup($key);
   }
 
   function enable() {
