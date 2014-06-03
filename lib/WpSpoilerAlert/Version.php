@@ -4,6 +4,6 @@ namespace WpSpoilerAlert;
 
 class Version {
 
-  static $version = '0.5.1';
+  static $version = '0.5.2';
 
 }
