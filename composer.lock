@@ -7,16 +7,16 @@
     "packages": [
         {
             "name": "dsawardekar/arrow",
-            "version": "0.8.1",
+            "version": "0.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dsawardekar/arrow.git",
-                "reference": "b862a73d6f81c8b11322f25fb0ba1f0a464eddda"
+                "reference": "f5582abc160126164a8f2fd6467c55fb9e50dd68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dsawardekar/arrow/zipball/b862a73d6f81c8b11322f25fb0ba1f0a464eddda",
-                "reference": "b862a73d6f81c8b11322f25fb0ba1f0a464eddda",
+                "url": "https://api.github.com/repos/dsawardekar/arrow/zipball/f5582abc160126164a8f2fd6467c55fb9e50dd68",
+                "reference": "f5582abc160126164a8f2fd6467c55fb9e50dd68",
                 "shasum": ""
             },
             "require": {
@@ -53,7 +53,7 @@
                 "wordpress",
                 "wordpress plugins"
             ],
-            "time": "2014-06-03 10:07:15"
+            "time": "2014-06-03 10:55:13"
         },
         {
             "name": "dsawardekar/encase-php",
