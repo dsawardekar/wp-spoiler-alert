@@ -85,6 +85,10 @@ Yes, see the customization section under Installation.
 
 == Changelog ==
 
+= 0.5.1 =
+
+* Fixes build script.
+
 = 0.5.0 =
 
 * Switched to Ember OptionsManager.
