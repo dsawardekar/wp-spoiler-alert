@@ -3,20 +3,20 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "bfcfee35ebf05ede27284e3156fd0393",
+    "hash": "3cfa917420d5956d7779127285196387",
     "packages": [
         {
             "name": "dsawardekar/arrow",
-            "version": "0.7.0",
+            "version": "0.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dsawardekar/arrow.git",
-                "reference": "8a5cc120e869dddcef87be07d322f15f04234e48"
+                "reference": "b862a73d6f81c8b11322f25fb0ba1f0a464eddda"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dsawardekar/arrow/zipball/8a5cc120e869dddcef87be07d322f15f04234e48",
-                "reference": "8a5cc120e869dddcef87be07d322f15f04234e48",
+                "url": "https://api.github.com/repos/dsawardekar/arrow/zipball/b862a73d6f81c8b11322f25fb0ba1f0a464eddda",
+                "reference": "b862a73d6f81c8b11322f25fb0ba1f0a464eddda",
                 "shasum": ""
             },
             "require": {
@@ -53,7 +53,7 @@
                 "wordpress",
                 "wordpress plugins"
             ],
-            "time": "2014-05-16 12:22:26"
+            "time": "2014-06-03 10:07:15"
         },
         {
             "name": "dsawardekar/encase-php",
@@ -609,17 +609,17 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.4.4",
+            "version": "v2.5.0",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "65539ecde838f9c0d18b006b2101e3deb4b5c9ff"
+                "reference": "b4b09c68ec2f2727574544ef0173684281a5033c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/65539ecde838f9c0d18b006b2101e3deb4b5c9ff",
-                "reference": "65539ecde838f9c0d18b006b2101e3deb4b5c9ff",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/b4b09c68ec2f2727574544ef0173684281a5033c",
+                "reference": "b4b09c68ec2f2727574544ef0173684281a5033c",
                 "shasum": ""
             },
             "require": {
@@ -628,7 +628,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.4-dev"
+                    "dev-master": "2.5-dev"
                 }
             },
             "autoload": {
@@ -654,7 +654,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-18 20:37:09"
+            "time": "2014-05-16 14:25:18"
         }
     ],
     "aliases": [

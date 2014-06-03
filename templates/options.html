@@ -1,0 +1,59 @@
+<div class="wrap">
+  <h2>WP-Spoiler-Alert Settings</h2>
+  <div id="wp-spoiler-alert">
+    <div id="message" class="updated progress progress-stub">
+      <p>
+        <strong>Loading Settings ...</strong>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script type="text/x-handlebars" data-template-name="components/notice-bar">
+  {{#if notice.available }}
+    <div id="message" {{bind-attr class=notice.cssClass }}>
+      {{#each notice.messages}}
+        <p>
+          <strong>{{ this }}</strong>
+        </p>
+      {{/each}}
+    </div>
+  {{/if}}
+</script>
+
+<script type="text/x-handlebars" data-template-name="wp-input">
+  <tr>
+    <th scope="row">
+      {{label-field propertyBinding="view.property" textBinding="view.label"}}
+    </th>
+    <td>
+      {{input-field propertyBinding="view.property" inputOptionsBinding="view.inputOptionsValues"}}
+      {{error-field propertyBinding="view.property"}}
+    </td>
+  </tr>
+</script>
+
+<script type="text/x-handlebars" data-template-name="application">
+  {{notice-bar notice=notice}}
+  {{ outlet }}
+</script>
+
+<script type="text/x-handlebars" data-template-name="loading">
+</script>
+
+<script type="text/x-handlebars" data-template-name="options">
+  {{#form-for this}}
+    <table class="form-table">
+      <tbody>
+      {{input max wrapper='wp-input' label="Maximum Blur"}}
+      {{input partial wrapper='wp-input' label="Partial Blur"}}
+      {{input tooltip wrapper='wp-input' label="Tooltip"}}
+      {{input custom wrapper='wp-input' label="Custom Stylesheet"}}
+      </tbody>
+    </table>
+    <p class="submit">
+      <button name="submit" id="submit" class="button button-primary" {{action 'save'}}>Save Changes</button>
+      <button name="submit" id="reset" class="button" {{action 'reset'}}>Restore Defaults</button>
+    </p>
+  {{/form-for}}
+</script>

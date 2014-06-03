@@ -2,14 +2,13 @@
 
 namespace WpSpoilerAlert;
 
-class OptionsManager extends \Arrow\OptionsManager\OptionsManager {
+class OptionsManager extends \Arrow\Ember\OptionsManager {
 
   function __construct($container) {
     parent::__construct($container);
 
     $container
-      ->singleton('optionsValidator', 'WpSpoilerAlert\OptionsValidator')
-      ->singleton('optionsPage', 'WpSpoilerAlert\OptionsPage');
+      ->singleton('optionsValidator', 'WpSpoilerAlert\OptionsValidator');
   }
 
 }

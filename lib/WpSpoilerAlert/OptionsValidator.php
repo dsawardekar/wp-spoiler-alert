@@ -11,7 +11,7 @@ class OptionsValidator extends \Arrow\OptionsManager\OptionsValidator {
     $validator->rule('required', 'partial');
     $validator->rule('integer', 'partial');
 
-    $validator->rule('safeText', 'tooltip');
+    $validator->rule('safeText', 'tooltip')->message('Unsafe Tooltip value.');
   }
 
 }

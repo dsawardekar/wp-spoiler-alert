@@ -10,12 +10,12 @@ namespace :git do
   task :ignore do
     cp 'lib/templates/gitignore', '.gitignore'
     sh 'git add .gitignore'
-    sh 'git commit -m "Updates .gitignore"'
+    sh 'git commit -m "Updates .gitignore [ci-skip]"'
   end
 
   task :vendor do
     sh 'git add vendor'
-    sh 'git commit -m "Adds vendor"'
+    sh 'git commit -m "Adds vendor [ci-skip]"'
   end
 
   task :clean do
@@ -31,12 +31,12 @@ namespace :git do
     sh 'git rm Gemfile'
     sh 'git rm Rakefile'
 
-    sh 'git commit -m "Removes development files"'
+    sh 'git commit -m "Removes development files [ci-skip]"'
   end
 
   task :clear_after do
     sh 'git rm -r lib/templates' if File.directory?('lib/templates')
-    sh 'git commit -m "Cleaning up after dist"'
+    sh 'git commit -m "Cleaning up after dist [ci-skip]"'
   end
 
   # todo: conditionally add js libs
@@ -65,12 +65,28 @@ end
 namespace :bower do
   desc "Copy Bower libraries"
   task :copy do
-    cp 'bower_components/scrollUp/js/jQuery.scrollUp.js', 'js/jquery-scroll-up.js'
+    cp 'bower_components/handlebars/handlebars.js', 'js/handlebars.js'
+    cp 'bower_components/handlebars/handlebars.min.js', 'js/handlebars.min.js'
+    cp 'bower_components/ember/ember.js', 'js/ember.js'
+    cp 'bower_components/ember/ember.min.js', 'js/ember.min.js'
+    cp 'bower_components/parsleyjs/dist/parsley.js', 'js/parsley.js'
+    cp 'bower_components/parsleyjs/dist/parsley.min.js', 'js/parsley.min.js'
   end
 
   desc "Update Bower libraries"
   task :update do
     sh 'bower update'
+  end
+end
+
+namespace :ember do
+  desc "Download Ember dependencies"
+  task :download do
+    sh 'wget -O js/ember-easyForm.js http://builds.dockyard.com.s3.amazonaws.com/ember-easyForm/release/ember-easyForm.js'
+    sh 'wget -O js/ember-easyForm.min.js http://builds.dockyard.com.s3.amazonaws.com/ember-easyForm/release/ember-easyForm.min.js'
+
+    sh 'wget -O js/ember-validations.js http://builds.dockyard.com.s3.amazonaws.com/ember-validations/release/ember-validations.js'
+    sh 'wget -O js/ember-validations.min.js http://builds.dockyard.com.s3.amazonaws.com/ember-validations/release/ember-validations.min.js'
   end
 end
 
@@ -84,7 +100,7 @@ namespace :composer do
     changed = `git status`
     if !changed.include?('working directory clean')
       sh 'git add composer.lock'
-      sh 'git commit -m "Fresh composer update"'
+      sh 'git commit -m "Fresh composer update [ci-skip]"'
     end
   end
 

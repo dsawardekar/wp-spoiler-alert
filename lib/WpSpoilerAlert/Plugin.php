@@ -14,22 +14,12 @@ class Plugin extends \Arrow\Plugin {
     $this->container
       ->object('pluginMeta', new PluginMeta($file))
       ->object('assetManager', new \Arrow\AssetManager\AssetManager($this->container))
-      ->object('optionsManager', new OptionsManager($this->container))
+      ->object('optionsManager', new \WpSpoilerAlert\OptionsManager($this->container))
       ->singleton('shortcode', 'WpSpoilerAlert\Shortcode');
   }
 
   function enable() {
     add_action('init', array($this, 'initFrontEnd'));
-    add_action('admin_init', array($this, 'initAdmin'));
-    add_action('admin_menu', array($this, 'initAdminMenu'));
-  }
-
-  function initAdmin() {
-    $this->lookup('optionsPostHandler')->enable();
-  }
-
-  function initAdminMenu() {
-    $this->lookup('optionsPage')->register();
   }
 
   function initFrontEnd() {
