@@ -69,11 +69,24 @@ namespace :bower do
     cp 'bower_components/handlebars/handlebars.min.js', 'js/handlebars.min.js'
     cp 'bower_components/ember/ember.js', 'js/ember.js'
     cp 'bower_components/ember/ember.min.js', 'js/ember.min.js'
+    cp 'bower_components/parsleyjs/dist/parsley.js', 'js/parsley.js'
+    cp 'bower_components/parsleyjs/dist/parsley.min.js', 'js/parsley.min.js'
   end
 
   desc "Update Bower libraries"
   task :update do
     sh 'bower update'
+  end
+end
+
+namespace :ember do
+  desc "Download Ember dependencies"
+  task :download do
+    sh 'wget -O js/ember-easyForm.js http://builds.dockyard.com.s3.amazonaws.com/ember-easyForm/release/ember-easyForm.js'
+    sh 'wget -O js/ember-easyForm.min.js http://builds.dockyard.com.s3.amazonaws.com/ember-easyForm/release/ember-easyForm.min.js'
+
+    sh 'wget -O js/ember-validations.js http://builds.dockyard.com.s3.amazonaws.com/ember-validations/release/ember-validations.js'
+    sh 'wget -O js/ember-validations.min.js http://builds.dockyard.com.s3.amazonaws.com/ember-validations/release/ember-validations.min.js'
   end
 end
 
