@@ -1,8 +1,8 @@
 <?php
 
-namespace WpSpoilerAlert;
+namespace WpSpoilerAlert\Options;
 
-class OptionsValidator extends \Arrow\OptionsManager\OptionsValidator {
+class Validator extends \Arrow\Options\Validator {
 
   function loadRules($validator) {
     $validator->rule('required', 'max');

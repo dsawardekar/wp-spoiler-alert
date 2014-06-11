@@ -1,31 +1,33 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "3cfa917420d5956d7779127285196387",
+    "hash": "313a3762389767e190111186d3a0392c",
     "packages": [
         {
             "name": "dsawardekar/arrow",
-            "version": "0.8.2",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dsawardekar/arrow.git",
-                "reference": "f5582abc160126164a8f2fd6467c55fb9e50dd68"
+                "reference": "6360060df046049981efd85d712407aa27164e17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dsawardekar/arrow/zipball/f5582abc160126164a8f2fd6467c55fb9e50dd68",
-                "reference": "f5582abc160126164a8f2fd6467c55fb9e50dd68",
+                "url": "https://api.github.com/repos/dsawardekar/arrow/zipball/6360060df046049981efd85d712407aa27164e17",
+                "reference": "6360060df046049981efd85d712407aa27164e17",
                 "shasum": ""
             },
             "require": {
-                "dsawardekar/encase-php": "~0.1.0",
+                "dsawardekar/encase-php": "~0.2.0",
                 "dsawardekar/wp-requirements": "~0.3.0",
                 "twig/twig": "~1.15.0",
                 "vlucas/valitron": "~1.1.5"
             },
             "require-dev": {
+                "mockery/mockery": "~0.9.0",
                 "phpunit/phpunit": "~3.7.0"
             },
             "type": "library",
@@ -53,20 +55,20 @@
                 "wordpress",
                 "wordpress plugins"
             ],
-            "time": "2014-06-03 10:55:13"
+            "time": "2014-06-11 08:27:01"
         },
         {
             "name": "dsawardekar/encase-php",
-            "version": "0.1.3",
+            "version": "0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dsawardekar/encase-php.git",
-                "reference": "4208bf2632230e72a11c98f29e34df24f7b9ca63"
+                "reference": "348784176c8666ea5eceeed5d429b2ddbf4ab7e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dsawardekar/encase-php/zipball/4208bf2632230e72a11c98f29e34df24f7b9ca63",
-                "reference": "4208bf2632230e72a11c98f29e34df24f7b9ca63",
+                "url": "https://api.github.com/repos/dsawardekar/encase-php/zipball/348784176c8666ea5eceeed5d429b2ddbf4ab7e0",
+                "reference": "348784176c8666ea5eceeed5d429b2ddbf4ab7e0",
                 "shasum": ""
             },
             "require-dev": {
@@ -97,7 +99,7 @@
                 "dependency injection",
                 "ioc"
             ],
-            "time": "2014-05-01 16:19:03"
+            "time": "2014-06-06 11:58:13"
         },
         {
             "name": "dsawardekar/wp-requirements",

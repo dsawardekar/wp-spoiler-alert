@@ -6,15 +6,12 @@ use Arrow\AssetManager\AssetManager;
 
 class Plugin extends \Arrow\Plugin {
 
-  public $container;
-
   function __construct($file) {
     parent::__construct($file);
 
     $this->container
       ->object('pluginMeta', new PluginMeta($file))
-      ->object('assetManager', new \Arrow\AssetManager\AssetManager($this->container))
-      ->object('optionsManager', new \WpSpoilerAlert\OptionsManager($this->container))
+      ->packager('optionsPackager', 'WpSpoilerAlert\Options\Packager')
       ->singleton('shortcode', 'WpSpoilerAlert\Shortcode');
   }
 
