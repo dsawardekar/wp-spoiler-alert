@@ -2,8 +2,6 @@
 
 namespace WpSpoilerAlert;
 
-use Arrow\AssetManager\AssetManager;
-
 class Plugin extends \Arrow\Plugin {
 
   function __construct($file) {
@@ -11,6 +9,7 @@ class Plugin extends \Arrow\Plugin {
 
     $this->container
       ->object('pluginMeta', new PluginMeta($file))
+      ->packager('assetPackager', 'Arrow\Asset\Packager')
       ->packager('optionsPackager', 'WpSpoilerAlert\Options\Packager')
       ->singleton('shortcode', 'WpSpoilerAlert\Shortcode');
   }
