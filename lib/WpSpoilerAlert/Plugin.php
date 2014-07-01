@@ -8,10 +8,11 @@ class Plugin extends \Arrow\Plugin {
     parent::__construct($file);
 
     $this->container
-      ->object('pluginMeta', new PluginMeta($file))
-      ->packager('assetPackager', 'Arrow\Asset\Packager')
-      ->packager('optionsPackager', 'WpSpoilerAlert\Options\Packager')
-      ->singleton('shortcode', 'WpSpoilerAlert\Shortcode');
+      ->object('pluginMeta'        ,  new PluginMeta($file))
+      ->packager('assetPackager'   ,  'Arrow\Asset\Packager')
+      ->packager('optionsPackager' ,  'WpSpoilerAlert\Options\Packager')
+      ->singleton('shortcode'      ,  'WpSpoilerAlert\Shortcode')
+      ->singleton('frontEndManifest', 'WpSpoilerAlert\FrontEndManifest');
   }
 
   function enable() {
@@ -22,48 +23,13 @@ class Plugin extends \Arrow\Plugin {
     $shortcode = $this->lookup('shortcode');
 
     add_shortcode('spoiler', array($shortcode, 'render'));
-    add_action('wp_footer', array($this, 'loadSpoilerJS'));
+    add_action('wp_footer', array($this, 'onFooter'));
   }
 
-  function loadSpoilerJS() {
-    $shortcode = $this->lookup('shortcode');
-
-    if ($shortcode->isPresent()) {
-      $options = array();
-      $options['dependencies'] = array('jquery');
-
-      $loader = $this->lookup('scriptLoader');
-      $loader->stream('spoiler', $options);
-
-      $options = array();
-      $options['dependencies'] = array('spoiler');
-      $options['localizer'] = array($this, 'getPluginOptions');
-
-      if ($this->canLoadCustomCSS()) {
-        $this->loadCustomCSS();
-      }
-
-      $loader->stream('spoiler-options', $options);
+  function onFooter() {
+    if ($this->lookup('shortcode')->isPresent()) {
+      $this->lookup('frontEndManifest')->load(false);
     }
-  }
-
-  function canLoadCustomCSS() {
-    return $this->lookup('optionsStore')->getOption('custom') &&
-      $this->lookup('pluginMeta')->hasCustomStylesheet();
-  }
-
-  function loadCustomCSS() {
-    $loader = $this->lookup('stylesheetLoader');
-    $loader->stream('theme-custom');
-  }
-
-  function getPluginOptions($script) {
-    $options = $this->lookup('optionsStore')->getOptions();
-    if ($options['custom'] && !$this->canLoadCustomCSS()) {
-      $options['custom'] = false;
-    }
-
-    return $options;
   }
 
 }
