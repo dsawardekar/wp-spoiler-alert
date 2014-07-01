@@ -6,6 +6,7 @@ class FrontEndManifest extends \Arrow\Asset\Manifest\Manifest {
 
   public $pluginMeta;
   public $optionsStore;
+  public $loaderMode = 'stream';
 
   function __construct() {
     $this->setContext(array($this, 'getFrontEndContext'));
@@ -19,7 +20,10 @@ class FrontEndManifest extends \Arrow\Asset\Manifest\Manifest {
   }
 
   function getScripts() {
-    return array($this->pluginMeta->getSlug());
+    return array(
+      'jquery-spoiler',
+      $this->pluginMeta->getSlug() . '-plugin'
+    );
   }
 
   function getStyles() {

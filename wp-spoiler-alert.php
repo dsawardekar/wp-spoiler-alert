@@ -14,7 +14,7 @@ require_once(__DIR__ . '/vendor/dsawardekar/arrow/lib/Arrow/ArrowPluginLoader.ph
 function wp_spoiler_alert_main() {
   $options = array(
     'plugin' => 'WpSpoilerAlert\Plugin',
-    'arrowVersion' => '0.9.0'
+    'arrowVersion' => '1.2.2'
   );
 
   ArrowPluginLoader::load(__FILE__, $options);

@@ -39,7 +39,7 @@ class FrontEndManifestTest extends \WP_UnitTestCase {
 
   function test_it_has_scripts() {
     $actual = $this->manifest->getScripts();
-    $this->assertEquals(array('wp-spoiler-alert'), $actual);
+    $this->assertEquals(array('jquery-spoiler', 'wp-spoiler-alert-plugin'), $actual);
   }
 
   function test_it_does_not_have_styles_if_custom_option_is_false() {
