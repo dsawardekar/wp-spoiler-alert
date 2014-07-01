@@ -40,6 +40,10 @@ class FrontEndManifestTest extends \WP_UnitTestCase {
     $this->assertSame($this->shortcode, $this->manifest->shortcode);
   }
 
+  function test_it_has_a_callable_context() {
+    $this->assertTrue($this->manifest->hasContext());
+  }
+
   function test_it_knows_if_shortcode_is_absent() {
     $this->assertFalse($this->manifest->hasShortcode());
   }
