@@ -21,18 +21,7 @@ class PluginMeta extends \Arrow\PluginMeta {
 
   function getOptionsContext() {
     $optionsStore = $this->lookup('optionsStore');
-    $options      = $optionsStore->getOptions();
-
-    if ($options['custom'] && !$this->canLoadCustomCSS()) {
-      $options['custom'] = false;
-    }
-
-    return $options;
-  }
-
-  function canLoadCustomCSS() {
-    return $this->lookup('optionsStore')->getOption('custom') &&
-      $this->hasCustomStylesheet();
+    return $optionsStore->getOptions();
   }
 
 }
