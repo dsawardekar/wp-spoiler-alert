@@ -4,13 +4,11 @@
   },
   "require": {
     "dsawardekar/encase-php": "~0.2.0",
-    "dsawardekar/arrow": "~1.0.0",
-    "dsawardekar/wp-requirements": "~0.3.0"
+    "dsawardekar/arrow": "~1.2.0"
   },
   "autoload": {
     "psr-4": {
-      "WpSpoilerAlert\\": "lib/WpSpoilerAlert",
-      "Arrow\\": "lib/Arrow"
+      "WpSpoilerAlert\\": "lib/WpSpoilerAlert"
     }
   }
 }
