@@ -5,7 +5,6 @@ namespace WpSpoilerAlert;
 class FrontEndManifest extends \Arrow\Asset\Manifest\Manifest {
 
   public $pluginMeta;
-  public $shortcode;
   public $optionsStore;
 
   function __construct() {
@@ -15,16 +14,12 @@ class FrontEndManifest extends \Arrow\Asset\Manifest\Manifest {
   function needs() {
     return array_merge(
       parent::needs(),
-      array('shortcode', 'pluginMeta', 'optionsStore')
+      array('pluginMeta', 'optionsStore')
     );
   }
 
   function getScripts() {
-    if ($this->shortcode->isPresent()) {
-      return array($this->pluginMeta->getSlug());
-    } else {
-      return array();
-    }
+    return array($this->pluginMeta->getSlug());
   }
 
   function getStyles() {
@@ -35,17 +30,8 @@ class FrontEndManifest extends \Arrow\Asset\Manifest\Manifest {
     }
   }
 
-  function hasShortcode() {
-    return $this->shortcode->isPresent();
-  }
-
-  function hasScripts() {
-    return $this->hasShortcode();
-  }
-
   function hasStyles() {
-    return $this->hasShortcode() &&
-      $this->optionsStore->getOption('custom') &&
+    return $this->optionsStore->getOption('custom') &&
       $this->pluginMeta->hasCustomStylesheet();
   }
 

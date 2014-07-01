@@ -9,7 +9,6 @@ class FrontEndManifestTest extends \WP_UnitTestCase {
   public $container;
   public $meta;
   public $store;
-  public $shortcode;
   public $manifest;
 
   function setUp() {
@@ -19,12 +18,10 @@ class FrontEndManifestTest extends \WP_UnitTestCase {
     $this->container
       ->object('pluginMeta', new \WpSpoilerAlert\PluginMeta('wp-spoiler-alert.php'))
       ->packager('optionsPackager', 'Arrow\Options\Packager')
-      ->singleton('shortcode', 'WpSpoilerAlert\Shortcode')
       ->singleton('frontEndManifest', 'WpSpoilerAlert\FrontEndManifest');
 
     $this->meta      = $this->container->lookup('pluginMeta');
     $this->store     = $this->container->lookup('optionsStore');
-    $this->shortcode = $this->container->lookup('shortcode');
     $this->manifest  = $this->container->lookup('frontEndManifest');
   }
 
@@ -36,45 +33,21 @@ class FrontEndManifestTest extends \WP_UnitTestCase {
     $this->assertSame($this->store, $this->manifest->optionsStore);
   }
 
-  function test_it_has_shortcode() {
-    $this->assertSame($this->shortcode, $this->manifest->shortcode);
-  }
-
   function test_it_has_a_callable_context() {
     $this->assertTrue($this->manifest->hasContext());
   }
 
-  function test_it_knows_if_shortcode_is_absent() {
-    $this->assertFalse($this->manifest->hasShortcode());
-  }
-
-  function test_it_knows_if_shortcode_is_present() {
-    $this->shortcode->render(array(), 'foo');
-    $this->assertTrue($this->manifest->hasShortcode());
-  }
-
-  function test_it_does_not_have_scripts_if_shortcode_is_absent() {
-    $this->assertEmpty($this->manifest->getScripts());
-  }
-
-  function test_it_has_scripts_if_shortcode_is_present() {
-    $this->shortcode->render(array(), 'foo');
+  function test_it_has_scripts() {
     $actual = $this->manifest->getScripts();
     $this->assertEquals(array('wp-spoiler-alert'), $actual);
   }
 
-  function test_it_does_not_have_styles_if_shortcode_is_absent() {
-    $this->assertEmpty($this->manifest->getStyles());
-  }
-
   function test_it_does_not_have_styles_if_custom_option_is_false() {
-    $this->shortcode->render(array(), 'foo');
     $this->store->setOption('custom', false);
     $this->assertEmpty($this->manifest->getStyles());
   }
 
   function test_it_does_not_have_styles_if_custom_stylesheet_is_absent() {
-    $this->shortcode->render(array(), 'foo');
     $this->store->setOption('custom', true);
     $meta = \Mockery::mock('WpSpoilerAlert\PluginMeta[hasCustomStylesheet]', array('wp-spoiler-alert.php'));
     $meta->shouldReceive('hasCustomStylesheet')
@@ -86,7 +59,6 @@ class FrontEndManifestTest extends \WP_UnitTestCase {
   }
 
   function test_it_has_custom_styles_if_needed() {
-    $this->shortcode->render(array(), 'foo');
     $this->store->setOption('custom', true);
     $meta = \Mockery::mock('WpSpoilerAlert\PluginMeta[hasCustomStylesheet]', array('wp-spoiler-alert.php'));
     $meta->shouldReceive('hasCustomStylesheet')
