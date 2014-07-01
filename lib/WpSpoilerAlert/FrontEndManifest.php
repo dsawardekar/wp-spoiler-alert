@@ -8,6 +8,10 @@ class FrontEndManifest extends \Arrow\Asset\Manifest\Manifest {
   public $shortcode;
   public $optionsStore;
 
+  function __construct() {
+    $this->setContext(array($this, 'getFrontEndContext'));
+  }
+
   function needs() {
     return array_merge(
       parent::needs(),
@@ -43,6 +47,16 @@ class FrontEndManifest extends \Arrow\Asset\Manifest\Manifest {
     return $this->hasShortcode() &&
       $this->optionsStore->getOption('custom') &&
       $this->pluginMeta->hasCustomStylesheet();
+  }
+
+  function getFrontEndContext() {
+    $options = $this->optionsStore->getOptions();
+
+    if ($options['custom'] && !$this->hasStyles()) {
+      $options['custom'] = false;
+    }
+
+    return $options;
   }
 
 }

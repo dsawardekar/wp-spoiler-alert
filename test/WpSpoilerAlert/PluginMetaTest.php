@@ -38,28 +38,6 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertArrayHasKey('custom', $actual);
   }
 
-  function test_it_knows_it_cannot_load_custom_css_if_custom_is_false() {
-    $this->store->setOption('custom', false);
-    $this->assertFalse($this->meta->canLoadCustomCSS());
-  }
-
-  function test_it_knows_it_can_load_custom_stylesheet_is_absent() {
-    $this->store->setOption('custom', true);
-    $this->assertFalse($this->meta->canLoadCustomCSS());
-  }
-
-  function test_it_knows_it_can_load_custom_stylesheet_if_custom_has_stylesheet_is_present() {
-    $this->store->setOption('custom', true);
-    $meta = \Mockery::mock('WpSpoilerAlert\PluginMeta[hasCustomStylesheet]', array('wp-spoiler-alert.php'));
-    $meta
-      ->shouldReceive('hasCustomStylesheet')
-      ->withNoArgs()
-      ->andReturn(true);
-
-    $this->container->inject($meta);
-    $this->assertTrue($meta->canLoadCustomCSS());
-  }
-
   function test_it_has_an_options_context() {
     $this->store->setOption('max', 100);
     $this->store->setOption('partial', 200);
@@ -72,19 +50,6 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertEquals(200, $actual['partial']);
     $this->assertEquals('lorem', $actual['tooltip']);
     $this->assertEquals(false, $actual['custom']);
-  }
-
-  function test_it_overrides_custom_if_cannot_load_custom_css() {
-    $this->store->setOption('custom', true);
-    $meta = \Mockery::mock('WpSpoilerAlert\PluginMeta[hasCustomStylesheet]', array('wp-spoiler-alert.php'));
-    $meta
-      ->shouldReceive('hasCustomStylesheet')
-      ->withNoArgs()
-      ->andReturn(false);
-
-    $this->container->inject($meta);
-    $actual = $meta->getOptionsContext();
-    $this->assertFalse($actual['custom']);
   }
 
 }
