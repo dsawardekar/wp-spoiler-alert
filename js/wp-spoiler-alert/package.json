@@ -1,0 +1,30 @@
+{
+  "name": "wp-spoiler-alert",
+  "version": "0.0.0",
+  "description": "wp-spoiler-alert",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify -t reactify --exclude \"**/jquery.js\" --entry app/app.js -o dist/assets/wp-spoiler-alert.js --debug",
+    "watch": "watchify -t reactify --exclude \"**/jquery.js\" --entry app/app.js -o dist/assets/wp-spoiler-alert.js --debug"
+  },
+  "author": "Darshan Sawardekar <darshan@sawardekar.org> (http://github.com/dsawardekar)",
+  "license": "ISC",
+  "dependencies": {
+    "es6-promise": "~1.0.0",
+    "es5-shim": "~4.0.0",
+    "envify": "~1.2.1",
+    "react": "~0.10.0",
+    "jquery": "~2.1.1"
+  },
+  "devDependencies": {
+    "watchify": "~0.10.2",
+    "chai": "~1.9.1",
+    "mocha": "~1.20.1",
+    "browserify": "~4.2.1",
+    "reactify": "~0.13.1",
+    "testem": "~0.6.17",
+    "sinon": "~1.10.3",
+    "sinon-chai": "~2.5.0"
+  }
+}

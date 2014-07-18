@@ -1,0 +1,10 @@
+{
+  "app/ext/*.js": {
+    "type": "external",
+    "test": "test/ext/%sTest.js"
+  },
+  "test/ext/*Test.js": {
+    "type": "test",
+    "alternate": "app/ext/*.js"
+  }
+}
