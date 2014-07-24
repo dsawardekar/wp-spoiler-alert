@@ -10,7 +10,8 @@ class Plugin extends \Arrow\Plugin {
     $this->container
       ->object('pluginMeta'        ,  new PluginMeta($file))
       ->packager('assetPackager'   ,  'Arrow\Asset\Packager')
-      ->packager('optionsPackager' ,  'WpSpoilerAlert\Options\Packager')
+      ->packager('optionsPackager' ,  'Arrow\Options\Packager')
+      ->singleton('optionsController', 'WpSpoilerAlert\OptionsController')
       ->singleton('shortcode'      ,  'WpSpoilerAlert\Shortcode')
       ->singleton('frontEndManifest', 'WpSpoilerAlert\FrontEndManifest');
   }
