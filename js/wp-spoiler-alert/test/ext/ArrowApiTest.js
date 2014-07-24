@@ -5,8 +5,8 @@ var expect         = require('chai').expect;
 var querystring    = require('querystring');
 var urlstring      = require('url');
 var Promise        = require('es6-promise').Promise;
-var sinon          = require('sinon');
 var $              = require('jquery');
+require('script!../sinon');
 
 describe('PromiseHandler', function() {
 

@@ -6,5 +6,14 @@
   "test/ext/*Test.js": {
     "type": "test",
     "alternate": "app/ext/*.js"
+  },
+
+  "app/components/*.js": {
+    "type": "component",
+    "test": "test/components/%sTest.js"
+  },
+  "test/components/*Test.js": {
+    "type": "test",
+    "alternate": "app/components/%s.js"
   }
 }
