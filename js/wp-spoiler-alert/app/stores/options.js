@@ -3,26 +3,30 @@ var OptionsStore = function(options, api) {
   this.api     = api;
 };
 
-OptionsStore.prototype.getOptions = function() {
-  return this.options;
-};
+OptionsStore.prototype = {
 
-OptionsStore.prototype.save = function(options) {
-  var promise = this.api.patch('options', options);
-  var self = this;
+  getOptions: function() {
+    return this.options;
+  },
 
-  return promise.then(function(json) {
-    self.options = json;
-  });
-};
+  save: function(options) {
+    var promise = this.api.patch('options', options);
+    var self = this;
 
-OptionsStore.prototype.reset = function() {
-  var promise = this.api.delete('options', {});
-  var self = this;
+    return promise.then(function(json) {
+      self.options = json;
+    });
+  },
 
-  return promise.then(function(json) {
-    self.options = json;
-  });
+  reset: function() {
+    var promise = this.api.delete('options');
+    var self = this;
+
+    return promise.then(function(json) {
+      self.options = json;
+    });
+  }
+
 };
 
 module.exports = OptionsStore;

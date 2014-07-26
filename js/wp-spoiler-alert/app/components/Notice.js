@@ -18,7 +18,7 @@ var Notice = React.createClass({
   },
 
   getClassList: function() {
-    return 'updated ' + this.props.type;
+    return 'updated ' + this.props.notice.type;
   },
 
   valueToMessages: function(value) {

@@ -115,6 +115,9 @@ ArrowApi.prototype = {
   },
 
   delete: function(resource, data) {
+    if (!data) {
+      data = {};
+    }
     var params = { type: 'POST', data: data };
     return this.request(resource, 'delete', params);
   }

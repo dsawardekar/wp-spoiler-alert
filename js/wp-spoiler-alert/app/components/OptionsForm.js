@@ -20,6 +20,9 @@ var OptionsForm = React.createClass({
 
   handleReset: function(event) {
     event.preventDefault();
+    var confirmed = confirm('Restore Defaults: Are you sure?');
+    if (!confirmed) return;
+
     this.props.noticeChange('progress', 'Restoring defaults ...');
 
     optionsStore.reset()

@@ -3,20 +3,29 @@ var Config = function(configKey) {
   this.load();
 };
 
-Config.prototype.load = function() {
-  this.params = window[this.configKey];
+Config.prototype = {
 
-  this.params.max     = parseInt(this.params.max, 10);
-  this.params.partial = parseInt(this.params.partial, 10);
-  this.params.custom  = this.params.custom === '1';
+  load: function() {
+    this.params = window[this.configKey].options;
+  },
+
+  getParam: function(name) {
+    return this.params[name];
+  },
+
+  getParams: function() {
+    return this.params;
+  },
+
+  translate: function(name) {
+    if (this.params.hasOwnProperty(name)) {
+      return this.params[name];
+    } else {
+      return name;
+    }
+  }
+
 };
 
-Config.prototype.getParam = function(name) {
-  return this.params[name];
-};
-
-Config.prototype.getParams = function() {
-  return this.params;
-};
 
 module.exports = Config;

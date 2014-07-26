@@ -1,1 +1,556 @@
-webpackJsonp([1],{0:function(e,t,n){var o=n(83),r=n(45),i=n(86),a=n(46).optionsStore;o(document).ready(function(){o(".wrap-static").remove(),r.renderComponent(i({options:a.getOptions()}),document.getElementById("wp-spoiler-alert-app"))})},45:function(e,t,n){e.exports=n(26)},46:function(e,t,n){var o=n(88).ArrowApi,r=n(87),i=n(89),a="wp_spoiler_alert_dist_assets_wp_spoiler_alert",s=new r(a),u=s.getParams(),c=new o(u),l=new i(u,c);e.exports={api:c,config:s,optionsStore:l}},83:function(e){e.exports=jQuery},84:function(e,t,n){var o=n(45),r=o.createClass({displayName:"Notice",getDefaultProps:function(){return{notice:{type:"",value:""}}},hasNotice:function(){return!!this.props.notice.type},getClassList:function(){return"updated "+this.props.type},valueToMessages:function(e){var t=[];return valueType=typeof e,"string"===valueType?t.push(e):"object"===valueType?t.push.apply(t,this.fieldsToMessages(e)):"array"===valueType?t.push.apply(t,e):t.push(e instanceof Error?e.toString():"Unknown Error: "+e),t},fieldsToMessages:function(e){var t=[];for(var n in e)if(e.hasOwnProperty(n)){var o=e[n];t.push.apply(t,o)}return t},getMessages:function(){return this.hasNotice()?this.valueToMessages(this.props.notice.value):[]},render:function(){return this.hasNotice()?o.DOM.div({id:"message",className:this.getClassList()},i({messages:this.getMessages()})):o.DOM.div(null)}}),i=o.createClass({displayName:"MessageList",renderMessage:function(e,t){return o.DOM.p({key:t},o.DOM.strong(null,e))},render:function(){return o.DOM.div(null,this.props.messages.map(this.renderMessage))}});e.exports=r},85:function(e,t,n){var o=n(50),r=n(46).optionsStore,i=o.createClass({displayName:"OptionsForm",mixins:[o.addons.LinkedStateMixin],getInitialState:function(){return this.props.options},handleSubmit:function(e){e.preventDefault(),this.props.noticeChange("progress","Saving settings ..."),r.save(this.state).then(this.updateState).catch(this.showError)},handleReset:function(e){e.preventDefault(),this.props.noticeChange("progress","Restoring defaults ..."),r.reset().then(this.updateState).catch(this.showError)},updateState:function(){this.setState(r.getOptions()),this.props.noticeChange("success","Settings saved successfully.")},showError:function(e){this.props.noticeChange("error",e)},render:function(){return o.DOM.form({onSubmit:this.handleSubmit},o.DOM.table({className:"form-table"},o.DOM.tbody(null,o.DOM.tr(null,o.DOM.th({scope:"row"},o.DOM.label({htmlFor:"max"},"Maximum Blur")),o.DOM.td(null,o.DOM.input({type:"number",id:"max",name:"max",valueLink:this.linkState("max")}))),o.DOM.tr(null,o.DOM.th({scope:"row"},o.DOM.label({htmlFor:"partial"},"Partial Blur")),o.DOM.td(null,o.DOM.input({type:"number",id:"partial",name:"partial",valueLink:this.linkState("partial")}))),o.DOM.tr(null,o.DOM.th({scope:"row"},o.DOM.label({htmlFor:"tooltip"},"Tooltip")),o.DOM.td(null,o.DOM.input({type:"text",id:"tooltip",name:"tooltip",valueLink:this.linkState("tooltip")}))),o.DOM.tr(null,o.DOM.th({scope:"row"},o.DOM.label({htmlFor:"custom"},"Custom Stylesheet")),o.DOM.td(null,o.DOM.input({type:"checkbox",id:"custom",name:"custom",checkedLink:this.linkState("custom")}))))),o.DOM.p({className:"submit"},o.DOM.input({name:"submit",className:"button button-primary",value:"Save Changes",type:"submit"})," ",o.DOM.input({name:"reset",className:"button",value:"Restore Defaults",type:"submit",onClick:this.handleReset})))}});e.exports=i},86:function(e,t,n){var o=n(45),r=n(84),i=n(85),a=o.createClass({displayName:"OptionsPage",getInitialState:function(){return{notice:{type:"",value:""}}},onNotice:function(e,t){var n={type:e,value:t};this.setState({notice:n})},render:function(){return o.DOM.div(null,o.DOM.h2(null,"WP-Spoiler-Alert Settings"),o.DOM.div({id:"wp-spoiler-alert"},r({notice:this.state.notice}),i({options:this.props.options,noticeChange:this.onNotice})))}});e.exports=a},87:function(e){var t=function(e){this.configKey=e,this.load()};t.prototype.load=function(){this.params=window[this.configKey],this.params.max=parseInt(this.params.max,10),this.params.partial=parseInt(this.params.partial,10),this.params.custom="1"===this.params.custom},t.prototype.getParam=function(e){return this.params[e]},t.prototype.getParams=function(){return this.params},e.exports=t},88:function(e,t,n){var o=n(83),r=n(47).Promise,i=function(e){e.then(this.onAjaxSuccess.bind(this)).fail(this.onAjaxFailure.bind(this))};i.prototype={handle:function(e,t){this.resolve=e,this.reject=t},onAjaxSuccess:function(e){"0"===e?this.reject("not_logged_in"):e.success?this.resolve(e.data):this.reject(e.data.error)},onAjaxFailure:function(e){var t;t="timeout"===e.statusText?"request_timeout":e.responseJSON?e.responseJSON.data.error:"unknown_response",this.reject(t)}};var a=function(e){this.config=e};a.prototype={urlFor:function(e,t){var n={};n.controller=e,n.operation=t,n.nonce=this.config.nonce;var r=this.config.apiEndpoint,i=o.param(n);return-1===r.indexOf("?")?r+"?"+i:r+"&"+i},paramsFor:function(e,t,n){return"object"!=typeof n&&(n={}),n.url=this.urlFor(e,t),"POST"===n.type&&n.hasOwnProperty("data")&&"string"!=typeof n.data&&(n.data=JSON.stringify(n.data)),n},request:function(e,t,n){n=this.paramsFor(e,t,n);var a=o.ajax(n),s=new i(a),u=s.handle.bind(s),c=new r(u);return c},all:function(e){var t={type:"GET"};return this.request(e,"all",t)},get:function(e,t){var n={type:"GET",data:t};return this.request(e,"get",n)},post:function(e,t){var n={type:"POST",data:t};return this.request(e,"post",n)},put:function(e,t){var n={type:"POST",data:t};return this.request(e,"put",n)},patch:function(e,t){var n={type:"POST",data:t};return this.request(e,"patch",n)},"delete":function(e,t){var n={type:"POST",data:t};return this.request(e,"delete",n)}},t.ArrowApi=a,t.PromiseHandler=i},89:function(e){var t=function(e,t){this.options=e,this.api=t};t.prototype.getOptions=function(){return this.options},t.prototype.save=function(e){var t=this.api.patch("options",e),n=this;return t.then(function(e){n.options=e})},t.prototype.reset=function(){var e=this.api.delete("options",{}),t=this;return e.then(function(e){t.options=e})},e.exports=t}});
+webpackJsonp([1],[
+/* 0 */
+/*!*********************!*\
+  !*** ./app/main.js ***!
+  \*********************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var $            = __webpack_require__(/*! jquery */ 1);
+	var React        = __webpack_require__(/*! react */ 5);
+	var OptionsPage  = __webpack_require__(/*! ./components/OptionsPage */ 3);
+	var optionsStore = __webpack_require__(/*! ./app */ 2).optionsStore;
+	
+	$(document).ready(function() {
+	  $('.wrap-static').remove();
+	
+	  React.renderComponent(
+	    OptionsPage({options: optionsStore.getOptions()}),
+	    document.getElementById('wp-spoiler-alert-app')
+	  );
+	});
+	
+
+
+/***/ },
+/* 1 */
+/*!*************************!*\
+  !*** external "jQuery" ***!
+  \*************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = jQuery;
+
+/***/ },
+/* 2 */
+/*!********************!*\
+  !*** ./app/app.js ***!
+  \********************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	
+	__webpack_require__(/*! ./styles/app.css */ 15);
+	
+	var ArrowApi = __webpack_require__(/*! ./ext/ArrowApi */ 8).ArrowApi;
+	var Config   = __webpack_require__(/*! ./config */ 6);
+	var Options  = __webpack_require__(/*! ./stores/options */ 9);
+	
+	/* app initialization */
+	var pluginSlug   = 'wp_spoiler_alert';
+	var config       = new Config(pluginSlug);
+	var configParams = config.getParams();
+	var api          = new ArrowApi(configParams);
+	var optionsStore = new Options(configParams, api);
+	
+	module.exports = {
+	  pluginSlug   : pluginSlug,
+	  api          : api,
+	  config       : config,
+	  optionsStore : optionsStore
+	};
+
+
+/***/ },
+/* 3 */
+/*!***************************************!*\
+  !*** ./app/components/OptionsPage.js ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var React       = __webpack_require__(/*! react */ 5);
+	var Notice      = __webpack_require__(/*! ./Notice */ 10);
+	var OptionsForm = __webpack_require__(/*! ./OptionsForm */ 11);
+	
+	var OptionsPage = React.createClass({displayName: 'OptionsPage',
+	  getInitialState: function() {
+	    return {
+	      notice: { type: '', value: '' }
+	    };
+	  },
+	
+	  onNotice: function(type, value) {
+	    var notice = { type: type, value: value };
+	    this.setState({notice: notice});
+	  },
+	
+	  render: function() {
+	    return (
+	      React.DOM.div(null, 
+	        React.DOM.h2(null, "WP-Spoiler-Alert Settings"), 
+	        React.DOM.div({id: "wp-spoiler-alert"}, 
+	          Notice({notice: this.state.notice}), 
+	          OptionsForm({options: this.props.options, noticeChange: this.onNotice})
+	        )
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = OptionsPage;
+
+
+/***/ },
+/* 4 */,
+/* 5 */
+/*!**************************!*\
+  !*** ./~/react/react.js ***!
+  \**************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(/*! ./lib/React */ 14);
+
+
+/***/ },
+/* 6 */
+/*!***********************!*\
+  !*** ./app/config.js ***!
+  \***********************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var Config = function(configKey) {
+	  this.configKey = configKey;
+	  this.load();
+	};
+	
+	Config.prototype = {
+	
+	  load: function() {
+	    this.params = window[this.configKey].options;
+	  },
+	
+	  getParam: function(name) {
+	    return this.params[name];
+	  },
+	
+	  getParams: function() {
+	    return this.params;
+	  },
+	
+	  translate: function(name) {
+	    if (this.params.hasOwnProperty(name)) {
+	      return this.params[name];
+	    } else {
+	      return name;
+	    }
+	  }
+	
+	};
+	
+	
+	module.exports = Config;
+
+
+/***/ },
+/* 7 */,
+/* 8 */
+/*!*****************************!*\
+  !*** ./app/ext/ArrowApi.js ***!
+  \*****************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var $           = __webpack_require__(/*! jquery */ 1);
+	var Promise     = __webpack_require__(/*! es6-promise */ 12).Promise;
+	
+	var PromiseHandler = function(ajaxPromise) {
+	  ajaxPromise
+	    .then(this.onAjaxSuccess.bind(this))
+	    .fail(this.onAjaxFailure.bind(this));
+	};
+	
+	PromiseHandler.prototype = {
+	
+	  handle: function(resolve, reject) {
+	    this.resolve = resolve;
+	    this.reject  = reject;
+	  },
+	
+	  onAjaxSuccess: function(response) {
+	    if (response === '0') {
+	      this.reject('not_logged_in');
+	    } else if (response.success) {
+	      this.resolve(response.data);
+	    } else {
+	      this.reject(response.data.error);
+	    }
+	  },
+	
+	  onAjaxFailure: function(response) {
+	    var error;
+	    if (response.statusText === 'timeout') {
+	      error = 'request_timeout';
+	    } else if (response.responseJSON) {
+	      error = response.responseJSON.data.error;
+	    } else {
+	      /* TODO: do some basic parsing of the HTML response */
+	      error = 'unknown_response';
+	    }
+	
+	    this.reject(error);
+	  }
+	
+	};
+	
+	var ArrowApi = function(config) {
+	  this.config = config;
+	};
+	
+	ArrowApi.prototype = {
+	
+	  urlFor: function(controller, operation) {
+	    var params        = {};
+	    params.controller = controller;
+	    params.operation  = operation;
+	    params.nonce      = this.config.nonce;
+	
+	    var apiEndpoint = this.config.apiEndpoint;
+	    var queryParams = $.param(params);
+	
+	    if (apiEndpoint.indexOf('?') === -1) {
+	      return apiEndpoint + '?' + queryParams;
+	    } else {
+	      return apiEndpoint + '&' + queryParams;
+	    }
+	  },
+	
+	  paramsFor: function(controller, operation, params) {
+	    if (typeof params !== 'object') {
+	      params = {};
+	    }
+	
+	    params.url = this.urlFor(controller, operation);
+	
+	    if (params.type === 'POST' && params.hasOwnProperty('data')) {
+	      if (typeof params.data !== 'string') {
+	        params.data = JSON.stringify(params.data);
+	      }
+	    }
+	
+	    return params;
+	  },
+	
+	  request: function(controller, operation, params) {
+	    params      = this.paramsFor(controller, operation, params);
+	
+	    var ajaxPromise = $.ajax(params);
+	    var handler     = new PromiseHandler(ajaxPromise);
+	    var handle      = handler.handle.bind(handler);
+	    var promise     = new Promise(handle);
+	
+	    return promise;
+	  },
+	
+	  all: function(resource) {
+	    var params = { type: 'GET' };
+	    return this.request(resource, 'all', params);
+	  },
+	
+	  get: function(resource, data) {
+	    var params = { type: 'GET', data: data };
+	    return this.request(resource, 'get', params);
+	  },
+	
+	  post: function(resource, data) {
+	    var params = { type: 'POST', data: data };
+	    return this.request(resource, 'post', params);
+	  },
+	
+	  put: function(resource, data) {
+	    var params = { type: 'POST', data: data };
+	    return this.request(resource, 'put', params);
+	  },
+	
+	  patch: function(resource, data) {
+	    var params = { type: 'POST', data: data };
+	    return this.request(resource, 'patch', params);
+	  },
+	
+	  delete: function(resource, data) {
+	    if (!data) {
+	      data = {};
+	    }
+	    var params = { type: 'POST', data: data };
+	    return this.request(resource, 'delete', params);
+	  }
+	
+	};
+	
+	exports.ArrowApi       = ArrowApi;
+	exports.PromiseHandler = PromiseHandler;
+
+
+/***/ },
+/* 9 */
+/*!*******************************!*\
+  !*** ./app/stores/options.js ***!
+  \*******************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var OptionsStore = function(options, api) {
+	  this.options = options;
+	  this.api     = api;
+	};
+	
+	OptionsStore.prototype = {
+	
+	  getOptions: function() {
+	    return this.options;
+	  },
+	
+	  save: function(options) {
+	    var promise = this.api.patch('options', options);
+	    var self = this;
+	
+	    return promise.then(function(json) {
+	      self.options = json;
+	    });
+	  },
+	
+	  reset: function() {
+	    var promise = this.api.delete('options');
+	    var self = this;
+	
+	    return promise.then(function(json) {
+	      self.options = json;
+	    });
+	  }
+	
+	};
+	
+	module.exports = OptionsStore;
+
+
+/***/ },
+/* 10 */
+/*!**********************************!*\
+  !*** ./app/components/Notice.js ***!
+  \**********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	
+	var React = __webpack_require__(/*! react */ 5);
+	
+	var Notice = React.createClass({displayName: 'Notice',
+	
+	  getDefaultProps: function() {
+	    return {
+	      notice: {
+	        type: '',
+	        value: ''
+	      }
+	    };
+	  },
+	
+	  hasNotice: function() {
+	    return !!this.props.notice.type;
+	  },
+	
+	  getClassList: function() {
+	    return 'updated ' + this.props.notice.type;
+	  },
+	
+	  valueToMessages: function(value) {
+	    var messages = [];
+	    valueType = typeof(value);
+	
+	    if (valueType === 'string') {
+	      /* plain text error */
+	      messages.push(value);
+	    } else if (valueType === 'object') {
+	      /* list of errors, field => error */
+	      messages.push.apply(messages, this.fieldsToMessages(value));
+	    } else if (valueType === 'array') {
+	      messages.push.apply(messages, value);
+	    } else if (value instanceof Error) {
+	      messages.push(value.toString());
+	    } else {
+	      messages.push('Unknown Error: ' + value);
+	    }
+	
+	    return messages;
+	  },
+	
+	  fieldsToMessages: function(fields) {
+	    var messages = [];
+	    for (var field in fields) {
+	      if (fields.hasOwnProperty(field)) {
+	        var errors = fields[field];
+	        messages.push.apply(messages, errors);
+	      }
+	    }
+	
+	    return messages;
+	  },
+	
+	  getMessages: function() {
+	    if (this.hasNotice()) {
+	      return this.valueToMessages(this.props.notice.value);
+	    } else {
+	      return [];
+	    }
+	  },
+	
+	  render: function() {
+	    if (this.hasNotice()) {
+	      return (
+	        React.DOM.div({id: "message", className: this.getClassList()}, 
+	          MessageList({messages: this.getMessages()})
+	        )
+	      );
+	    } else {
+	      return (React.DOM.div(null));
+	    }
+	  }
+	});
+	
+	var MessageList = React.createClass({displayName: 'MessageList',
+	
+	  renderMessage: function(message, index) {
+	    return (
+	      React.DOM.p({key: index}, 
+	        React.DOM.strong(null, message )
+	      )
+	    );
+	  },
+	
+	  render: function() {
+	    return (
+	      React.DOM.div(null, 
+	        this.props.messages.map(this.renderMessage)
+	      )
+	    );
+	  },
+	
+	});
+	
+	module.exports = Notice;
+
+
+/***/ },
+/* 11 */
+/*!***************************************!*\
+  !*** ./app/components/OptionsForm.js ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var React        = __webpack_require__(/*! react/addons */ 4);
+	var optionsStore = __webpack_require__(/*! ../app.js */ 2).optionsStore;
+	
+	var OptionsForm = React.createClass({displayName: 'OptionsForm',
+	  mixins: [React.addons.LinkedStateMixin],
+	
+	  getInitialState: function() {
+	    return this.props.options;
+	  },
+	
+	  handleSubmit: function(event) {
+	    event.preventDefault();
+	    this.props.noticeChange('progress', 'Saving settings ...');
+	
+	    optionsStore.save(this.state)
+	      .then(this.updateState)
+	      .catch(this.showError);
+	  },
+	
+	  handleReset: function(event) {
+	    event.preventDefault();
+	    var confirmed = confirm('Restore Defaults: Are you sure?');
+	    if (!confirmed) return;
+	
+	    this.props.noticeChange('progress', 'Restoring defaults ...');
+	
+	    optionsStore.reset()
+	      .then(this.updateState)
+	      .catch(this.showError);
+	  },
+	
+	  updateState: function() {
+	    this.setState(optionsStore.getOptions());
+	    this.props.noticeChange('success', 'Settings saved successfully.');
+	  },
+	
+	  showError: function(error) {
+	    this.props.noticeChange('error', error);
+	  },
+	
+	  render: function() {
+	    return (
+	      React.DOM.form({onSubmit: this.handleSubmit}, 
+	        React.DOM.table({className: "form-table"}, 
+	          React.DOM.tbody(null, 
+	            React.DOM.tr(null, 
+	              React.DOM.th({scope: "row"}, 
+	                React.DOM.label({htmlFor: "max"}, "Maximum Blur")
+	              ), 
+	              React.DOM.td(null, 
+	                React.DOM.input({type: "number", id: "max", name: "max", valueLink: this.linkState('max')})
+	              )
+	            ), 
+	            React.DOM.tr(null, 
+	              React.DOM.th({scope: "row"}, 
+	                React.DOM.label({htmlFor: "partial"}, "Partial Blur")
+	              ), 
+	              React.DOM.td(null, 
+	                React.DOM.input({type: "number", id: "partial", name: "partial", valueLink: this.linkState('partial')})
+	              )
+	            ), 
+	            React.DOM.tr(null, 
+	              React.DOM.th({scope: "row"}, 
+	                React.DOM.label({htmlFor: "tooltip"}, "Tooltip")
+	              ), 
+	              React.DOM.td(null, 
+	                React.DOM.input({type: "text", id: "tooltip", name: "tooltip", valueLink: this.linkState('tooltip')})
+	              )
+	            ), 
+	            React.DOM.tr(null, 
+	              React.DOM.th({scope: "row"}, 
+	                React.DOM.label({htmlFor: "custom"}, "Custom Stylesheet")
+	              ), 
+	              React.DOM.td(null, 
+	                React.DOM.input({type: "checkbox", id: "custom", name: "custom", checkedLink: this.linkState('custom')})
+	              )
+	            )
+	          )
+	        ), 
+	        React.DOM.p({className: "submit"}, 
+	          React.DOM.input({name: "submit", className: "button button-primary", value: "Save Changes", type: "submit"}), 
+	          " ", 
+	          React.DOM.input({name: "reset", className: "button", value: "Restore Defaults", type: "submit", onClick: this.handleReset})
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = OptionsForm;
+
+
+/***/ },
+/* 12 */,
+/* 13 */,
+/* 14 */,
+/* 15 */
+/*!****************************!*\
+  !*** ./app/styles/app.css ***!
+  \****************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ }
+]);
+//# sourceMappingURL=app.js.map
