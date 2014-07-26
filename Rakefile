@@ -39,10 +39,6 @@ namespace :git do
     sh 'git commit -m "Cleaning up after dist [ci-skip]"'
   end
 
-  # todo: conditionally add js libs
-  task :js do
-  end
-
   task :archive do
     sh "rm -rf #{destination}" if File.directory?(destination)
     mkdir_p destination
@@ -63,34 +59,57 @@ namespace :git do
 end
 
 namespace :js do
+  @plugin_slug = plugin_slug
+
   def node(*args)
-    args[0] = "node_modules/.bin/#{args[0]}"
-    sh(*args)
+    Dir.chdir("js/#{@plugin_slug}") do
+      args[0] = "node_modules/.bin/#{args[0]}"
+      sh(*args)
+    end
   end
 
-  desc 'Build app.js'
+  def copy_assets(min = false)
+    copy_asset 'vendor.js' , "js/#{@plugin_slug}-vendor.js" , min
+    copy_asset 'app.js'    , "js/#{@plugin_slug}-app.js"    , min
+
+    copy_asset 'vendor.css' , "css/#{@plugin_slug}-vendor.css" , min
+    copy_asset 'app.css'    , "css/#{@plugin_slug}-app.css"    , min
+  end
+
+  def copy_asset(name, to, min = false)
+    if min
+      extension = File.extname(to)
+      basename  = File.basename(to, extension)
+      dirname   = File.dirname(to)
+      to        = "#{dirname}/#{basename}.min#{extension}"
+    end
+
+    source_path = "js/#{@plugin_slug}/dist/assets/#{name}"
+    cp source_path, to if File.exists? source_path
+  end
+
+  desc 'Build app'
   task :build do
-    Dir.chdir("js/#{plugin_slug}") do
-      node 'browserify',
-        '--entry', 'app/app.js',
-        '--external', 'react',
-        '--external', 'jquery',
-        '--external', 'es5-shim',
-        '--external', 'es6-promise',
-        '--transform', 'reactify',
-        '-o', "dist/assets/#{plugin_slug}.js"
-    end
+    node 'webpack'
   end
 
-  desc 'Build & Watch app.js'
+  desc 'Build & Watch app'
   task :watch do
+    node 'webpack -w -d --cache'
   end
 
-  desc 'Build vendor.js'
-  task :vendor do
-    Dir.chdir("js/#{plugin_slug}") do
-      node 'browserify', '--entry', 'app/vendor.js', '-o', 'dist/assets/vendor.js'
-    end
+  desc 'Build production app'
+  task :build_prod do
+    node 'webpack -p'
+  end
+
+  desc 'Copy app into production locations'
+  task :dist do
+    node 'webpack'
+    copy_assets
+
+    node 'webpack -p'
+    copy_assets true
   end
 end
 
@@ -112,7 +131,7 @@ end
 namespace :svn do
   desc "Copy files to svn trunk"
   task :copy do
-    sh "rsync -a tmp/dist/#{version}/ ../svn/trunk --exclude=.gitignore"
+    sh "rsync -a --delete tmp/dist/#{version}/ ../svn/trunk --exclude=.gitignore"
   end
 
   desc "Add changed files to svn"
