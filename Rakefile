@@ -20,7 +20,6 @@ namespace :git do
 
   task :clean do
     sh 'rm -rf tmp'              if File.directory?('tmp')
-    sh 'rm -rf bower_components' if File.directory?('bower_components')
     sh 'rm wp-cli.local.yml'     if File.exists?('wp-cli.local.yml')
 
     sh 'git rm *.json'
@@ -30,6 +29,9 @@ namespace :git do
     sh 'git rm phpunit.xml'
     sh 'git rm Gemfile'
     sh 'git rm Rakefile'
+    sh "git rm -rf js/#{plugin_slug}" if File.directory?("js/#{plugin_slug}")
+    sh 'git rm .scrutinizer.yml'      if File.exists?('.scrutinizer.yml')
+    sh 'git rm .coveralls.yml'        if File.exists?('.coveralls.yml')
 
     sh 'git commit -m "Removes development files [ci-skip]"'
   end
@@ -117,7 +119,7 @@ namespace :composer do
   desc "Update Composer dependencies"
   task :update do
     sh 'rm -rf vendor' if File.directory?('vendor')
-    sh 'composer update'
+    sh 'composer update --no-dev'
 
     # todo: use porcelain if this isn't good enough
     changed = `git status`
