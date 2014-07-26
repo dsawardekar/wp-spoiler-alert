@@ -2,7 +2,7 @@
 
 namespace WpSpoilerAlert;
 
-class FrontEndManifest extends \Arrow\Asset\Manifest\Manifest {
+class FrontEndManifest extends \Arrow\Asset\Manifest {
 
   public $pluginMeta;
   public $optionsStore;
