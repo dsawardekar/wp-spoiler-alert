@@ -19,4 +19,9 @@ class PluginMeta extends \Arrow\PluginMeta {
     );
   }
 
+  function getOptionsContext() {
+    $optionsStore = $this->lookup('optionsStore');
+    return $optionsStore->getOptions();
+  }
+
 }

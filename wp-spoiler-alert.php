@@ -2,7 +2,7 @@
 /*
 Plugin Name: wp-spoiler-alert
 Description: Shortcode to hide Spoilers in your Posts
-Version: 0.5.2
+Version: 0.6.0
 Author: Darshan Sawardekar
 Author URI: http://pressing-matters.io/
 Plugin URI: http://wordpress.org/plugins/wp-spoiler-alert
@@ -14,7 +14,7 @@ require_once(__DIR__ . '/vendor/dsawardekar/arrow/lib/Arrow/ArrowPluginLoader.ph
 function wp_spoiler_alert_main() {
   $options = array(
     'plugin' => 'WpSpoilerAlert\Plugin',
-    'arrowVersion' => '0.8.1'
+    'arrowVersion' => '1.6.0'
   );
 
   ArrowPluginLoader::load(__FILE__, $options);

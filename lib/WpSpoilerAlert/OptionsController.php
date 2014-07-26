@@ -2,9 +2,10 @@
 
 namespace WpSpoilerAlert;
 
-class OptionsValidator extends \Arrow\OptionsManager\OptionsValidator {
+class OptionsController extends \Arrow\Options\Controller {
 
-  function loadRules($validator) {
+  function patch() {
+    $validator = $this->getValidator();
     $validator->rule('required', 'max');
     $validator->rule('integer', 'max');
 
@@ -12,6 +13,12 @@ class OptionsValidator extends \Arrow\OptionsManager\OptionsValidator {
     $validator->rule('integer', 'partial');
 
     $validator->rule('safeText', 'tooltip')->message('Unsafe Tooltip value.');
+
+    if ($validator->validate()) {
+      return parent::patch();
+    } else {
+      return $this->error($validator->errors());
+    }
   }
 
 }

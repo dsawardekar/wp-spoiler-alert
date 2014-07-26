@@ -116,7 +116,7 @@
   };
 
   SpoilerStylesheet.prototype.getOptions = function() {
-    var options = spoiler_options;
+    var options = window.wp_spoiler_alert_plugin;
     this.toInteger('max', options);
     this.toInteger('partial', options);
     this.toBoolean('custom', options);

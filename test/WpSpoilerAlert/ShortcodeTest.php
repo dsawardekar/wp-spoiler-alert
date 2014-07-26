@@ -17,9 +17,8 @@ class ShortcodeTest extends \WP_UnitTestCase {
     $this->container = new Container();
     $this->container
       ->object('pluginMeta', $this->pluginMeta)
-      ->object('optionsManager', new \Arrow\OptionsManager\OptionsManager($this->container))
+      ->packager('optionsPackager', 'Arrow\Options\Packager')
       ->singleton('shortcode', 'WpSpoilerAlert\Shortcode');
-
 
     $this->shortcode = $this->container->lookup('shortcode');
   }

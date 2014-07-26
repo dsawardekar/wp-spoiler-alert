@@ -39,10 +39,6 @@ namespace :git do
     sh 'git commit -m "Cleaning up after dist [ci-skip]"'
   end
 
-  # todo: conditionally add js libs
-  task :js do
-  end
-
   task :archive do
     sh "rm -rf #{destination}" if File.directory?(destination)
     mkdir_p destination
@@ -62,31 +58,58 @@ namespace :git do
   end
 end
 
-namespace :bower do
-  desc "Copy Bower libraries"
-  task :copy do
-    cp 'bower_components/handlebars/handlebars.js', 'js/handlebars.js'
-    cp 'bower_components/handlebars/handlebars.min.js', 'js/handlebars.min.js'
-    cp 'bower_components/ember/ember.js', 'js/ember.js'
-    cp 'bower_components/ember/ember.min.js', 'js/ember.min.js'
-    cp 'bower_components/parsleyjs/dist/parsley.js', 'js/parsley.js'
-    cp 'bower_components/parsleyjs/dist/parsley.min.js', 'js/parsley.min.js'
+namespace :js do
+  @plugin_slug = plugin_slug
+
+  def node(*args)
+    Dir.chdir("js/#{@plugin_slug}") do
+      args[0] = "node_modules/.bin/#{args[0]}"
+      sh(*args)
+    end
   end
 
-  desc "Update Bower libraries"
-  task :update do
-    sh 'bower update'
+  def copy_assets(min = false)
+    copy_asset 'vendor.js' , "js/#{@plugin_slug}-vendor.js" , min
+    copy_asset 'app.js'    , "js/#{@plugin_slug}-app.js"    , min
+
+    copy_asset 'vendor.css' , "css/#{@plugin_slug}-vendor.css" , min
+    copy_asset 'app.css'    , "css/#{@plugin_slug}-app.css"    , min
   end
-end
 
-namespace :ember do
-  desc "Download Ember dependencies"
-  task :download do
-    sh 'wget -O js/ember-easyForm.js http://builds.dockyard.com.s3.amazonaws.com/ember-easyForm/release/ember-easyForm.js'
-    sh 'wget -O js/ember-easyForm.min.js http://builds.dockyard.com.s3.amazonaws.com/ember-easyForm/release/ember-easyForm.min.js'
+  def copy_asset(name, to, min = false)
+    if min
+      extension = File.extname(to)
+      basename  = File.basename(to, extension)
+      dirname   = File.dirname(to)
+      to        = "#{dirname}/#{basename}.min#{extension}"
+    end
 
-    sh 'wget -O js/ember-validations.js http://builds.dockyard.com.s3.amazonaws.com/ember-validations/release/ember-validations.js'
-    sh 'wget -O js/ember-validations.min.js http://builds.dockyard.com.s3.amazonaws.com/ember-validations/release/ember-validations.min.js'
+    source_path = "js/#{@plugin_slug}/dist/assets/#{name}"
+    cp source_path, to if File.exists? source_path
+  end
+
+  desc 'Build app'
+  task :build do
+    node 'webpack'
+  end
+
+  desc 'Build & Watch app'
+  task :watch do
+    node 'webpack -w -d --cache'
+  end
+
+  desc 'Build production app'
+  task :build_prod do
+    node 'webpack -p'
+  end
+
+  desc 'Copy app into production locations'
+  task :dist do
+    node 'webpack'
+    copy_assets
+
+    node 'webpack -p'
+    copy_assets true
   end
 end
 
@@ -103,20 +126,12 @@ namespace :composer do
       sh 'git commit -m "Fresh composer update [ci-skip]"'
     end
   end
-
-  desc "Update Requirements.php"
-  task :update_requirements do
-    source = 'vendor/dsawardekar/wp-requirements/lib/MyWordPressPlugin/Requirements.php'
-    contents = File.read(source)
-    contents = contents.gsub('MyWordPressPlugin', 'WpSpoilerAlert')
-    File.write('lib/WpSpoilerAlert/Requirements.php', contents)
-  end
 end
 
 namespace :svn do
   desc "Copy files to svn trunk"
   task :copy do
-    sh "rsync -a tmp/dist/#{version}/ ../svn/trunk --exclude=.gitignore"
+    sh "rsync -a --delete tmp/dist/#{version}/ ../svn/trunk --exclude=.gitignore"
   end
 
   desc "Add changed files to svn"
@@ -153,46 +168,6 @@ namespace :svn do
 
       sh "svn copy #{trunk} #{tag} -m 'Release Tag: #{version}'"
     end
-  end
-end
-
-namespace :github do
-  desc 'Update spoiler.js'
-  task 'update_spoilerjs' do
-    url = 'https://raw.githubusercontent.com/joshbuddy/spoiler-alert/master/spoiler.js'
-    sh "wget -O js/spoiler.js #{url}"
-  end
-end
-
-namespace :generator do
-  desc 'Generate Languages'
-  task 'generate_languages' do
-    languages = Dir.glob('js/languages/*.js').map do |file|
-      File.basename(file, '.js')
-    end
-
-    template = ERB.new(File.read('lib/templates/Languages.php.erb'), nil, '-')
-    opts = OpenStruct.new({
-      :languages => languages
-    })
-
-    vars = opts.instance_eval { binding }
-    File.write('lib/WpSyntaxHighlighter/Languages.php', template.result(vars))
-  end
-
-  desc 'Generate Themes'
-  task 'generate_themes' do
-    themes = Dir.glob('css/*.css').map do |file|
-      File.basename(file, '.css')
-    end
-
-    template = ERB.new(File.read('lib/templates/Themes.php.erb'), nil, '-')
-    opts = OpenStruct.new({
-      :themes => themes
-    })
-
-    vars = opts.instance_eval { binding }
-    File.write('lib/WpSyntaxHighlighter/Themes.php', template.result(vars))
   end
 end
 
