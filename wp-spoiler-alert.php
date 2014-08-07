@@ -2,7 +2,7 @@
 /*
 Plugin Name: wp-spoiler-alert
 Description: Shortcode to hide Spoilers in your Posts
-Version: 0.8.2
+Version: 0.8.3
 Author: Darshan Sawardekar
 Author URI: http://pressing-matters.io/
 Plugin URI: http://wordpress.org/plugins/wp-spoiler-alert

@@ -3,8 +3,8 @@ Contributors: dsawardekar
 Donate link: http://pressing-matters.io/
 Tags: spoiler alert, spoiler
 Requires at least: 3.5.0
-Tested up to: 3.9
-Stable tag: 0.8.2
+Tested up to: 3.9.2
+Stable tag: 0.8.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,6 +84,10 @@ For eg:- the CSS below makes all spoilers into red blocks.
 Yes, see the customization section under Installation.
 
 == Changelog ==
+
+= 0.8.3 =
+
+* Upgrades to Arrow 1.8.0.
 
 = 0.8.2 =
 
