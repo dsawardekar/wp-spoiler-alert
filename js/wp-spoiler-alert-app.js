@@ -31,11 +31,11 @@ webpackJsonp([1],[
 
 	/** @jsx React.DOM */
 
-	__webpack_require__(15);
+	__webpack_require__(17);
 
-	var ArrowApi = __webpack_require__(8).ArrowApi;
-	var Config   = __webpack_require__(7);
-	var Options  = __webpack_require__(9);
+	var ArrowApi = __webpack_require__(11).ArrowApi;
+	var Config   = __webpack_require__(9);
+	var Options  = __webpack_require__(12);
 
 	/* app initialization */
 	var pluginSlug   = 'wp_spoiler_alert';
@@ -58,8 +58,8 @@ webpackJsonp([1],[
 
 	/** @jsx React.DOM */
 	var React       = __webpack_require__(5);
-	var Notice      = __webpack_require__(10);
-	var OptionsForm = __webpack_require__(11);
+	var Notice      = __webpack_require__(6);
+	var OptionsForm = __webpack_require__(7);
 
 	var OptionsPage = React.createClass({displayName: 'OptionsPage',
 	  getInitialState: function() {
@@ -95,12 +95,213 @@ webpackJsonp([1],[
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(14);
+	module.exports = __webpack_require__(13);
 
 
 /***/ },
-/* 6 */,
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+
+	var React = __webpack_require__(5);
+
+	var Notice = React.createClass({displayName: 'Notice',
+
+	  getDefaultProps: function() {
+	    return {
+	      notice: {
+	        type: '',
+	        value: ''
+	      }
+	    };
+	  },
+
+	  hasNotice: function() {
+	    return !!this.props.notice.type;
+	  },
+
+	  getClassList: function() {
+	    return 'updated ' + this.props.notice.type;
+	  },
+
+	  valueToMessages: function(value) {
+	    var messages = [];
+	    valueType = typeof(value);
+
+	    if (valueType === 'string') {
+	      /* plain text error */
+	      messages.push(value);
+	    } else if (valueType === 'object') {
+	      /* list of errors, field => error */
+	      messages.push.apply(messages, this.fieldsToMessages(value));
+	    } else if (valueType === 'array') {
+	      messages.push.apply(messages, value);
+	    } else if (value instanceof Error) {
+	      messages.push(value.toString());
+	    } else {
+	      messages.push('Unknown Error: ' + value);
+	    }
+
+	    return messages;
+	  },
+
+	  fieldsToMessages: function(fields) {
+	    var messages = [];
+	    for (var field in fields) {
+	      if (fields.hasOwnProperty(field)) {
+	        var errors = fields[field];
+	        messages.push.apply(messages, errors);
+	      }
+	    }
+
+	    return messages;
+	  },
+
+	  getMessages: function() {
+	    if (this.hasNotice()) {
+	      return this.valueToMessages(this.props.notice.value);
+	    } else {
+	      return [];
+	    }
+	  },
+
+	  render: function() {
+	    if (this.hasNotice()) {
+	      return (
+	        React.DOM.div({id: "message", className: this.getClassList()}, 
+	          MessageList({messages: this.getMessages()})
+	        )
+	      );
+	    } else {
+	      return (React.DOM.div(null));
+	    }
+	  }
+	});
+
+	var MessageList = React.createClass({displayName: 'MessageList',
+
+	  renderMessage: function(message, index) {
+	    return (
+	      React.DOM.p({key: index}, 
+	        React.DOM.strong(null, message )
+	      )
+	    );
+	  },
+
+	  render: function() {
+	    return (
+	      React.DOM.div(null, 
+	        this.props.messages.map(this.renderMessage)
+	      )
+	    );
+	  },
+
+	});
+
+	module.exports = Notice;
+
+
+/***/ },
 /* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var React        = __webpack_require__(4);
+	var optionsStore = __webpack_require__(2).optionsStore;
+
+	var OptionsForm = React.createClass({displayName: 'OptionsForm',
+	  mixins: [React.addons.LinkedStateMixin],
+
+	  getInitialState: function() {
+	    return this.props.options;
+	  },
+
+	  handleSubmit: function(event) {
+	    event.preventDefault();
+	    this.props.noticeChange('progress', 'Saving settings ...');
+
+	    optionsStore.save(this.state)
+	      .then(this.updateState)
+	      .catch(this.showError);
+	  },
+
+	  handleReset: function(event) {
+	    event.preventDefault();
+	    var confirmed = confirm('Restore Defaults: Are you sure?');
+	    if (!confirmed) return;
+
+	    this.props.noticeChange('progress', 'Restoring defaults ...');
+
+	    optionsStore.reset()
+	      .then(this.updateState)
+	      .catch(this.showError);
+	  },
+
+	  updateState: function() {
+	    this.setState(optionsStore.getOptions());
+	    this.props.noticeChange('success', 'Settings saved successfully.');
+	  },
+
+	  showError: function(error) {
+	    this.props.noticeChange('error', error);
+	  },
+
+	  render: function() {
+	    return (
+	      React.DOM.form({onSubmit: this.handleSubmit}, 
+	        React.DOM.table({className: "form-table"}, 
+	          React.DOM.tbody(null, 
+	            React.DOM.tr(null, 
+	              React.DOM.th({scope: "row"}, 
+	                React.DOM.label({htmlFor: "max"}, "Maximum Blur")
+	              ), 
+	              React.DOM.td(null, 
+	                React.DOM.input({type: "number", id: "max", name: "max", valueLink: this.linkState('max')})
+	              )
+	            ), 
+	            React.DOM.tr(null, 
+	              React.DOM.th({scope: "row"}, 
+	                React.DOM.label({htmlFor: "partial"}, "Partial Blur")
+	              ), 
+	              React.DOM.td(null, 
+	                React.DOM.input({type: "number", id: "partial", name: "partial", valueLink: this.linkState('partial')})
+	              )
+	            ), 
+	            React.DOM.tr(null, 
+	              React.DOM.th({scope: "row"}, 
+	                React.DOM.label({htmlFor: "tooltip"}, "Tooltip")
+	              ), 
+	              React.DOM.td(null, 
+	                React.DOM.input({type: "text", id: "tooltip", name: "tooltip", valueLink: this.linkState('tooltip')})
+	              )
+	            ), 
+	            React.DOM.tr(null, 
+	              React.DOM.th({scope: "row"}, 
+	                React.DOM.label({htmlFor: "custom"}, "Custom Stylesheet")
+	              ), 
+	              React.DOM.td(null, 
+	                React.DOM.input({type: "checkbox", id: "custom", name: "custom", checkedLink: this.linkState('custom')})
+	              )
+	            )
+	          )
+	        ), 
+	        React.DOM.p({className: "submit"}, 
+	          React.DOM.input({name: "submit", className: "button button-primary", value: "Save Changes", type: "submit"}), 
+	          " ", 
+	          React.DOM.input({name: "reset", className: "button", value: "Restore Defaults", type: "submit", onClick: this.handleReset})
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = OptionsForm;
+
+
+/***/ },
+/* 8 */,
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Config = function(configKey) {
@@ -137,11 +338,12 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 8 */
+/* 10 */,
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $           = __webpack_require__(1);
-	var Promise     = __webpack_require__(12).Promise;
+	var Promise     = __webpack_require__(8).Promise;
 
 	var PromiseHandler = function(ajaxPromise) {
 	  ajaxPromise
@@ -271,7 +473,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 9 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var OptionsStore = function(options, api) {
@@ -309,211 +511,11 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/** @jsx React.DOM */
-
-	var React = __webpack_require__(5);
-
-	var Notice = React.createClass({displayName: 'Notice',
-
-	  getDefaultProps: function() {
-	    return {
-	      notice: {
-	        type: '',
-	        value: ''
-	      }
-	    };
-	  },
-
-	  hasNotice: function() {
-	    return !!this.props.notice.type;
-	  },
-
-	  getClassList: function() {
-	    return 'updated ' + this.props.notice.type;
-	  },
-
-	  valueToMessages: function(value) {
-	    var messages = [];
-	    valueType = typeof(value);
-
-	    if (valueType === 'string') {
-	      /* plain text error */
-	      messages.push(value);
-	    } else if (valueType === 'object') {
-	      /* list of errors, field => error */
-	      messages.push.apply(messages, this.fieldsToMessages(value));
-	    } else if (valueType === 'array') {
-	      messages.push.apply(messages, value);
-	    } else if (value instanceof Error) {
-	      messages.push(value.toString());
-	    } else {
-	      messages.push('Unknown Error: ' + value);
-	    }
-
-	    return messages;
-	  },
-
-	  fieldsToMessages: function(fields) {
-	    var messages = [];
-	    for (var field in fields) {
-	      if (fields.hasOwnProperty(field)) {
-	        var errors = fields[field];
-	        messages.push.apply(messages, errors);
-	      }
-	    }
-
-	    return messages;
-	  },
-
-	  getMessages: function() {
-	    if (this.hasNotice()) {
-	      return this.valueToMessages(this.props.notice.value);
-	    } else {
-	      return [];
-	    }
-	  },
-
-	  render: function() {
-	    if (this.hasNotice()) {
-	      return (
-	        React.DOM.div({id: "message", className: this.getClassList()}, 
-	          MessageList({messages: this.getMessages()})
-	        )
-	      );
-	    } else {
-	      return (React.DOM.div(null));
-	    }
-	  }
-	});
-
-	var MessageList = React.createClass({displayName: 'MessageList',
-
-	  renderMessage: function(message, index) {
-	    return (
-	      React.DOM.p({key: index}, 
-	        React.DOM.strong(null, message )
-	      )
-	    );
-	  },
-
-	  render: function() {
-	    return (
-	      React.DOM.div(null, 
-	        this.props.messages.map(this.renderMessage)
-	      )
-	    );
-	  },
-
-	});
-
-	module.exports = Notice;
-
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/** @jsx React.DOM */
-	var React        = __webpack_require__(4);
-	var optionsStore = __webpack_require__(2).optionsStore;
-
-	var OptionsForm = React.createClass({displayName: 'OptionsForm',
-	  mixins: [React.addons.LinkedStateMixin],
-
-	  getInitialState: function() {
-	    return this.props.options;
-	  },
-
-	  handleSubmit: function(event) {
-	    event.preventDefault();
-	    this.props.noticeChange('progress', 'Saving settings ...');
-
-	    optionsStore.save(this.state)
-	      .then(this.updateState)
-	      .catch(this.showError);
-	  },
-
-	  handleReset: function(event) {
-	    event.preventDefault();
-	    var confirmed = confirm('Restore Defaults: Are you sure?');
-	    if (!confirmed) return;
-
-	    this.props.noticeChange('progress', 'Restoring defaults ...');
-
-	    optionsStore.reset()
-	      .then(this.updateState)
-	      .catch(this.showError);
-	  },
-
-	  updateState: function() {
-	    this.setState(optionsStore.getOptions());
-	    this.props.noticeChange('success', 'Settings saved successfully.');
-	  },
-
-	  showError: function(error) {
-	    this.props.noticeChange('error', error);
-	  },
-
-	  render: function() {
-	    return (
-	      React.DOM.form({onSubmit: this.handleSubmit}, 
-	        React.DOM.table({className: "form-table"}, 
-	          React.DOM.tbody(null, 
-	            React.DOM.tr(null, 
-	              React.DOM.th({scope: "row"}, 
-	                React.DOM.label({htmlFor: "max"}, "Maximum Blur")
-	              ), 
-	              React.DOM.td(null, 
-	                React.DOM.input({type: "number", id: "max", name: "max", valueLink: this.linkState('max')})
-	              )
-	            ), 
-	            React.DOM.tr(null, 
-	              React.DOM.th({scope: "row"}, 
-	                React.DOM.label({htmlFor: "partial"}, "Partial Blur")
-	              ), 
-	              React.DOM.td(null, 
-	                React.DOM.input({type: "number", id: "partial", name: "partial", valueLink: this.linkState('partial')})
-	              )
-	            ), 
-	            React.DOM.tr(null, 
-	              React.DOM.th({scope: "row"}, 
-	                React.DOM.label({htmlFor: "tooltip"}, "Tooltip")
-	              ), 
-	              React.DOM.td(null, 
-	                React.DOM.input({type: "text", id: "tooltip", name: "tooltip", valueLink: this.linkState('tooltip')})
-	              )
-	            ), 
-	            React.DOM.tr(null, 
-	              React.DOM.th({scope: "row"}, 
-	                React.DOM.label({htmlFor: "custom"}, "Custom Stylesheet")
-	              ), 
-	              React.DOM.td(null, 
-	                React.DOM.input({type: "checkbox", id: "custom", name: "custom", checkedLink: this.linkState('custom')})
-	              )
-	            )
-	          )
-	        ), 
-	        React.DOM.p({className: "submit"}, 
-	          React.DOM.input({name: "submit", className: "button button-primary", value: "Save Changes", type: "submit"}), 
-	          " ", 
-	          React.DOM.input({name: "reset", className: "button", value: "Restore Defaults", type: "submit", onClick: this.handleReset})
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = OptionsForm;
-
-
-/***/ },
-/* 12 */,
 /* 13 */,
 /* 14 */,
-/* 15 */
+/* 15 */,
+/* 16 */,
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// removed by extract-text-webpack-plugin
